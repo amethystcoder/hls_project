@@ -1,0 +1,3 @@
+/node_modules
+src/hls_files/*
+src/split_vid/videos/*
