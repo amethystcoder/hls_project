@@ -21,6 +21,8 @@ INSERT INTO `settings` (`config`, `var`) VALUES
 ('adminId', '29'),
 ('default_video', 'http://localhost/gdplyr/uploads/no-video.mp4'),
 ('default_banner', 'http://localhost/gdplyr/uploads/default-banner.jpg'),
+('stun_servers', 'stun:stun.l.google.com:19302,stun:global.stun.twilio.com:3478?transport=udp'),
+('tracker_servers', 'wss://personal.tracker1.com,wss://personal.tracker2.com'),
 ('last_backup', '2021-01-17 18:53:08'),
 ('jw_license', 'https://content.jwplatform.com/libraries/Jq6HIbgz.js'),
 ('isAdblocker', '1'),
