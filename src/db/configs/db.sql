@@ -119,7 +119,7 @@ CREATE TABLE `links` (
   `downloads` int(25) DEFAULT 0,
   `is_alt` tinyint(4) DEFAULT 0,
   `slug` varchar(255) NOT NULL,
-  `status` tinyint(4) DEFAULT 0 COMMENT '0 = active,\r\n1 = inactive,\r\n2 = broken',
+  `status` tinyint(4) DEFAULT 'active',
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `deleted` tinyint(4) DEFAULT 0

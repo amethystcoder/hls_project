@@ -1,11 +1,11 @@
 const dbInstance = require('../db/configs/dbConfig')
 
-//A list of common functions for CRUD on the links database
-//Feel free to add more as needed
+//A list of common functions for CRUD on the hls_links database
+//Feel free to include more as needed
 
-const table = "links";
+const table = "hls_links";
 
-const tableColumnNames = 'acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug,status,updated_at,created_at,deleted';
+const tableColumnNames = 'id,link_id,server_id,file_id,file_size,status';
 
 /**
  * gets the number of items in the table
@@ -48,7 +48,7 @@ let deletion = (restOfQuery)=>{
 let update = (set,restOfQuery)=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
     let result;
-    dbInstance.query(`UPDATE ${table} ${set}  ${where} ${restOfQuery}`,(error,results,fields)=>{
+    dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
         if (error) throw error
         result = results;
     })
@@ -56,55 +56,61 @@ let update = (set,restOfQuery)=>{
 }
 
 /**
- * gets all available links
+ * gets all available hls_links
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllLinks = (number=false)=>{
+let getAllhls_links = (number=false)=>{
     if (number) return getCount()
     return get()
 }
 
 //
 /**
- * gets all active links
+ * gets all active hls_links
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getActiveLinks = (number=false)=>{
-    if (number) return getCount("status = 'active'")
-    return get("status = 'active'")
+let getActivehls_links = (number=false)=>{
+    if (number) return getCount("status = true")
+    return get("status = true")
 }
 
-//
-/**
- * gets all broken links
- * @argument {boolean} number determines whether to just send the number of items in storage 
- */
-let getBrokenLinks = (number=false)=>{
-    if (number) return getCount("status = 'broken'")
-    return get("status = 'broken'")
-}
+
 
 /**
  * @argument {string} id
  */
-let getLinkUsingId = (linkId)=>{
-    return get(`id = '${dbInstance.escape(linkId)}'`)
+let getHlsLinkUsingId = (Id)=>{
+    return get(`id = '${dbInstance.escape(Id)}'`)
 }
 
 /**
- * create a new link in the database
- * @argument {Object} linkData object containing link data to be stored... properties include
- * id,acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug
+ * @argument {string} linkId
  */
-let createNewLink = (linkData)=>{
+let getHlsLinkUsinglinkId = (linkId)=>{
+    return get(`link_id = '${dbInstance.escape(linkId)}'`)
+}
+
+/**
+ * @argument {string} linkId
+ */
+let getHlsLinkUsingServerId = (serverId)=>{
+    return get(`server_id = '${dbInstance.escape(serverId)}'`)
+}
+
+
+/**
+ * create a new hls_links in the database
+ * @argument {Object} hls_linksData object containing hls_links data to be stored... properties include
+ * link_id,server_id,file_id,file_size,status
+ */
+let createNewHlsLink = (hls_linkData)=>{
     let result;
-    if (typeof linkData != 'object') throw TypeError("argument type is not correct, it should be an object")
+    if (typeof hls_linksData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    linkData.status = "active"
-    linkData.updated_at = new Date().toUTCString()
-    linkData.created_at = new Date().toUTCString()
-    linkData.deleted = false
-    dbInstance.query(`INSERT INTO ${table}`, linkData,(error,results,fields)=>{
+    hls_linkData.updated_at = new Date().toUTCString()
+    hls_linkData.created_at = new Date().toUTCString()
+    hls_linkData.status = true
+    dbInstance.query(`INSERT INTO ${table}`, hls_linkData,(error,results,fields)=>{
         if (error) throw error
         result = results;
     })
@@ -118,7 +124,7 @@ let createNewLink = (linkData)=>{
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
 let updateUsingId = (id,column,value)=>{
-    let updateColumnBlacklists = ["id","acc_id","created_at","updated_at"];//coulumns that cannot be updated
+    let updateColumnBlacklists = ["id"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
     if (Array.isArray(column) && Array.isArray(value)) {
@@ -140,18 +146,10 @@ let updateUsingId = (id,column,value)=>{
 }
 
 /**
- * deletes a link using its ID
+ * deletes a hls_links using its ID
  */
 let deleteUsingId = (id)=>{
     return deletion(`id = '${id}'`);
-}
-
-
-/**
- * deletes all broken links
- */
-let deleteBrokenLinks = ()=>{
-    return deletion('status = "broken"')
 }
 
 /**
@@ -177,13 +175,13 @@ let customDelete = (column,value)=>{
 }
 
 module.exports = {
-    getActiveLinks,
-    getAllLinks,
-    getLinkUsingId,
-    createNewLink,
+    getActivehls_links,
+    getAllhls_links,
+    createNewHlsLink,
+    getHlsLinkUsingServerId,
+    getHlsLinkUsingId,
+    getHlsLinkUsinglinkId,
     updateUsingId,
-    deleteBrokenLinks,
     deleteUsingId,
     customDelete,
-    getBrokenLinks
 }

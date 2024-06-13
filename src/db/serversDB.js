@@ -1,11 +1,11 @@
 const dbInstance = require('../db/configs/dbConfig')
 
-//A list of common functions for CRUD on the links database
-//Feel free to add more as needed
+//A list of common functions for CRUD on the servers database
+//Feel free to include more as needed
 
-const table = "links";
+const table = "servers";
 
-const tableColumnNames = 'acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug,status,updated_at,created_at,deleted';
+const tableColumnNames = 'id,name,domain,type,playbacks,is_broken,status,is_deleted';
 
 /**
  * gets the number of items in the table
@@ -48,7 +48,7 @@ let deletion = (restOfQuery)=>{
 let update = (set,restOfQuery)=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
     let result;
-    dbInstance.query(`UPDATE ${table} ${set}  ${where} ${restOfQuery}`,(error,results,fields)=>{
+    dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
         if (error) throw error
         result = results;
     })
@@ -56,55 +56,81 @@ let update = (set,restOfQuery)=>{
 }
 
 /**
- * gets all available links
+ * gets all available servers
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllLinks = (number=false)=>{
+let getAllservers = (number=false)=>{
     if (number) return getCount()
     return get()
 }
 
 //
 /**
- * gets all active links
+ * gets all active servers
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getActiveLinks = (number=false)=>{
-    if (number) return getCount("status = 'active'")
-    return get("status = 'active'")
+let getActiveservers = (number=false)=>{
+    if (number) return getCount("status = true")
+    return get("status = true")
 }
 
-//
-/**
- * gets all broken links
- * @argument {boolean} number determines whether to just send the number of items in storage 
- */
-let getBrokenLinks = (number=false)=>{
-    if (number) return getCount("status = 'broken'")
-    return get("status = 'broken'")
-}
+
 
 /**
  * @argument {string} id
  */
-let getLinkUsingId = (linkId)=>{
-    return get(`id = '${dbInstance.escape(linkId)}'`)
+let getServerUsingId = (Id)=>{
+    return get(`id = '${dbInstance.escape(Id)}'`)
 }
 
 /**
- * create a new link in the database
- * @argument {Object} linkData object containing link data to be stored... properties include
- * id,acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug
+ * @argument {string} type
  */
-let createNewLink = (linkData)=>{
+let getServerUsingType = (type)=>{
+    return get(`type = '${dbInstance.escape(type)}'`)
+}
+
+/**
+ * @argument {string} name
+ */
+let getServerUsingName = (name)=>{
+    return get(`name = '${dbInstance.escape(name)}'`)
+}
+
+/**
+ * @argument {string} domain
+ */
+let getServerUsingDomain = (domain)=>{
+    return get(`domain = '${dbInstance.escape(domain)}'`)
+}
+
+/**
+ *
+ */
+let getBrokenServer = (number=false)=>{
+    if (number) return getCount("is_broken = true")
+    return get("is_broken = true")
+}
+
+/**
+ *
+ */
+let getDeletedServer = (number=false)=>{
+    if (number) return getCount("is_deleted = true")
+    return get("is_deleted = true")
+}
+
+/**
+ * create a new servers in the database
+ * @argument {Object} serversData object containing servers data to be stored... properties include
+ * name,domain,type,playbacks,is_broken,status,is_deleted
+ */
+let createNewServer = (serverData)=>{
     let result;
-    if (typeof linkData != 'object') throw TypeError("argument type is not correct, it should be an object")
+    if (typeof serversData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    linkData.status = "active"
-    linkData.updated_at = new Date().toUTCString()
-    linkData.created_at = new Date().toUTCString()
-    linkData.deleted = false
-    dbInstance.query(`INSERT INTO ${table}`, linkData,(error,results,fields)=>{
+    serverData.status = true
+    dbInstance.query(`INSERT INTO ${table}`, serverData,(error,results,fields)=>{
         if (error) throw error
         result = results;
     })
@@ -118,7 +144,7 @@ let createNewLink = (linkData)=>{
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
 let updateUsingId = (id,column,value)=>{
-    let updateColumnBlacklists = ["id","acc_id","created_at","updated_at"];//coulumns that cannot be updated
+    let updateColumnBlacklists = ["id"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
     if (Array.isArray(column) && Array.isArray(value)) {
@@ -140,18 +166,10 @@ let updateUsingId = (id,column,value)=>{
 }
 
 /**
- * deletes a link using its ID
+ * deletes a servers using its ID
  */
 let deleteUsingId = (id)=>{
     return deletion(`id = '${id}'`);
-}
-
-
-/**
- * deletes all broken links
- */
-let deleteBrokenLinks = ()=>{
-    return deletion('status = "broken"')
 }
 
 /**
@@ -177,13 +195,16 @@ let customDelete = (column,value)=>{
 }
 
 module.exports = {
-    getActiveLinks,
-    getAllLinks,
-    getLinkUsingId,
-    createNewLink,
+    getServerUsingId,
+    getDeletedServer,
+    createNewServer,
+    getBrokenServer,
+    getServerUsingType,
+    getServerUsingName,
+    getServerUsingDomain,
+    getActiveservers,
+    getAllservers,
     updateUsingId,
-    deleteBrokenLinks,
     deleteUsingId,
     customDelete,
-    getBrokenLinks
 }

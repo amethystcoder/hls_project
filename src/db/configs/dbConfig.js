@@ -7,7 +7,8 @@ let connectionPool = sql.createPool({
     user:"root",
     password:"",
     database: "videodb",
-    waitForConnections:true
+    waitForConnections:true,
+    flags:'IGNORE_SPACE'
 });
 
 module.exports = connectionPool

@@ -1,11 +1,11 @@
 const dbInstance = require('../db/configs/dbConfig')
 
-//A list of common functions for CRUD on the links database
+//A list of common functions for CRUD on the ads database
 //Feel free to add more as needed
 
-const table = "links";
+const table = "ads";
 
-const tableColumnNames = 'acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug,status,updated_at,created_at,deleted';
+const tableColumnNames = 'id,title,type,code';
 
 /**
  * gets the number of items in the table
@@ -48,7 +48,7 @@ let deletion = (restOfQuery)=>{
 let update = (set,restOfQuery)=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
     let result;
-    dbInstance.query(`UPDATE ${table} ${set}  ${where} ${restOfQuery}`,(error,results,fields)=>{
+    dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
         if (error) throw error
         result = results;
     })
@@ -56,55 +56,51 @@ let update = (set,restOfQuery)=>{
 }
 
 /**
- * gets all available links
+ * gets all available ads
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllLinks = (number=false)=>{
+let getAllads = (number=false)=>{
     if (number) return getCount()
     return get()
 }
 
 //
 /**
- * gets all active links
+ * gets all active ads
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getActiveLinks = (number=false)=>{
+let getActiveads = (number=false)=>{
     if (number) return getCount("status = 'active'")
     return get("status = 'active'")
 }
 
 //
 /**
- * gets all broken links
+ * gets all pop ads
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getBrokenLinks = (number=false)=>{
-    if (number) return getCount("status = 'broken'")
-    return get("status = 'broken'")
+let getpopads = (number=false)=>{
+    if (number) return getCount("type = 'popad'")
+    return get("type = 'popad'")
 }
 
 /**
  * @argument {string} id
  */
-let getLinkUsingId = (linkId)=>{
-    return get(`id = '${dbInstance.escape(linkId)}'`)
+let getadUsingId = (adsId)=>{
+    return get(`id = '${dbInstance.escape(adsId)}'`)
 }
 
 /**
- * create a new link in the database
- * @argument {Object} linkData object containing link data to be stored... properties include
- * id,acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug
+ * create a new ads in the database
+ * @argument {Object} adsData object containing ads data to be stored... properties include
+ * title,type,code
  */
-let createNewLink = (linkData)=>{
+let createNewAd = (adsData)=>{
     let result;
-    if (typeof linkData != 'object') throw TypeError("argument type is not correct, it should be an object")
+    if (typeof adsData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    linkData.status = "active"
-    linkData.updated_at = new Date().toUTCString()
-    linkData.created_at = new Date().toUTCString()
-    linkData.deleted = false
-    dbInstance.query(`INSERT INTO ${table}`, linkData,(error,results,fields)=>{
+    dbInstance.query(`INSERT INTO ${table}`, adsData,(error,results,fields)=>{
         if (error) throw error
         result = results;
     })
@@ -118,7 +114,7 @@ let createNewLink = (linkData)=>{
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
 let updateUsingId = (id,column,value)=>{
-    let updateColumnBlacklists = ["id","acc_id","created_at","updated_at"];//coulumns that cannot be updated
+    let updateColumnBlacklists = ["id"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
     if (Array.isArray(column) && Array.isArray(value)) {
@@ -140,18 +136,10 @@ let updateUsingId = (id,column,value)=>{
 }
 
 /**
- * deletes a link using its ID
+ * deletes a ads using its ID
  */
 let deleteUsingId = (id)=>{
     return deletion(`id = '${id}'`);
-}
-
-
-/**
- * deletes all broken links
- */
-let deleteBrokenLinks = ()=>{
-    return deletion('status = "broken"')
 }
 
 /**
@@ -177,13 +165,12 @@ let customDelete = (column,value)=>{
 }
 
 module.exports = {
-    getActiveLinks,
-    getAllLinks,
-    getLinkUsingId,
-    createNewLink,
+    getActiveads,
+    getAllads,
+    getadUsingId,
+    getpopads,
+    createNewAd,
     updateUsingId,
-    deleteBrokenLinks,
     deleteUsingId,
     customDelete,
-    getBrokenLinks
 }

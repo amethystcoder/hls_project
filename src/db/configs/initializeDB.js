@@ -1,6 +1,8 @@
 const fs = require('fs')
 const DBPool = require('./dbConfig')
 
+//adds all required tables and configuration data to a new database
+
 const initializeDatabase = async ()=>{
     try {
         //create tables
@@ -13,7 +15,7 @@ const initializeDatabase = async ()=>{
                 if (file[index] === ";") {
                     SQLcommand += 
                     DBPool.query(SQLcommand,(error,results,fields)=>{
-                        if (error) console.log(error)
+                        if (error) throw error
                         console.log(results) 
                     })
                     SQLcommand = ''
@@ -30,7 +32,7 @@ const initializeDatabase = async ()=>{
                 if (file[index] === ";") {
                     SQLcommand += 
                     DBPool.query(SQLcommand,(error,results,fields)=>{
-                        if (error) console.log(error)
+                        if (error) throw error
                         console.log(results) 
                     })
                     SQLcommand = ''
