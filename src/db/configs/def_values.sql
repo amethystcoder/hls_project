@@ -15,7 +15,7 @@ INSERT INTO `settings` (`config`, `var`) VALUES
 ('sublist', '[\"sinhala\",\"english\",\"hindi\",\"french\",\"korean\"]'),
 ('logo', 'gdplyr-logo.png'),
 ('favicon', 'favicon.ico'),
-('player', 'jw'),
+('player', 'jwplayer'),
 ('playerSlug', 'v'),
 ('showServers', '1'),
 ('adminId', '29'),
