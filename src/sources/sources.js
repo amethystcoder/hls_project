@@ -1,0 +1,11 @@
+const GoogleDrive = require("./GoogleDrive")
+let OKru = require("./OkRu")
+const Box = require("./Box")
+const Yandex = require("./Yandex")
+
+module.exports = {
+    GoogleDrive,
+    OKru,
+    Box,
+    Yandex
+}

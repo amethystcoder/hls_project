@@ -118,7 +118,7 @@ let createNewLink = (linkData)=>{
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
 let updateUsingId = (id,column,value)=>{
-    let updateColumnBlacklists = ["id","acc_id","created_at","updated_at"];//coulumns that cannot be updated
+    let updateColumnBlacklists = ["id","acc_id","created_at","updated_at","slug"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
     if (Array.isArray(column) && Array.isArray(value)) {

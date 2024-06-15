@@ -4,7 +4,7 @@
  */
 
 const expressapp = require('express')
-const router = expressapp.Router({mergeParams:true,strict:true,caseSensitive:true})
+const router = expressapp.Router({mergeParams:true,strict:false,caseSensitive:true})
 const AppSettings = require('../db/settingsDB')
 
 router.get('/login',(req,res)=>{
@@ -14,6 +14,46 @@ router.get('/login',(req,res)=>{
         res.render('../template/error')
     }
 })
+
+router.get('/dashboard',(req,res)=>{
+    try {
+        res.render('../template/dashboard')
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/settings',(req,res)=>{
+    try {
+        res.render('../template/settings')
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/settings/:section',(req,res)=>{
+    try {
+        let section = req.params.section
+        switch (section) {
+            case "video":
+                res.render('../template/sections/settings/video')
+                break;
+            case "general":
+                res.render('../template/sections/settings/general')
+                break;
+            case "proxy":
+                res.render('../template/sections/settings/proxy')
+                break;
+            default:
+                res.render('../template/settings')
+                break;
+        }
+        res.render('../template/dashboard')
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
 
 //video player
 router.get('/video/:slug',(req,res)=>{
@@ -26,5 +66,7 @@ router.get('/video/:slug',(req,res)=>{
         res.render('../template/error')
     }
 })
+
+
 
 module.exports = router

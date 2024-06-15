@@ -1,12 +1,16 @@
 const cluster = require('cluster')
 const os = require('os')
+const express = require('express')
 const expressApp = require('./hls_server/server')
+const path = require('path')
 
 const cpus = os.cpus();
 
 if (cpus.length > 0) {
     
 }
+
+expressApp.use(express.static(path.join(__dirname,'template')))
 
 const PORT = 3000
 

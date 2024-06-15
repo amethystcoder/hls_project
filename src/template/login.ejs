@@ -3,15 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./static/common_styles.css">
+    <link rel="stylesheet" href="./static/login.css">
     <title>Login Admin</title>
+    <script>
+        function login(){
+            const username = document.getElementById("username").value
+            const password = document.getElementById("password").value
+            let formdata = new FormData()
+            formdata.append("username",username)
+            formdata.append("password",password)
+            fetch("http://localhost:3000/api/login",{//change later
+                method:'POST',
+                body:formdata,
+            }).then(Response => Response.json())
+            .then(data=>{
+
+            })
+        }
+    </script>
 </head>
-<body>
-    <h1>GD Player</h1>
-    <h2>Admin Login</h2>
-    <div>
-        <input type="text" placeholder="username">
-        <input type="password" placeholder="password">
-        <button>Login</button>
+<body style="display: flex;width: 100vw;">
+    <div class="side-illstr"></div>
+    <div class="contains-inputs">
+        <div>
+            <span class="bar">
+                <img src="./static/icons/logo.png" alt="" width="25" height="30">
+                <p style="font-weight: 500;margin-left: 10px;">GDplyr</p>
+            </span>
+            <h2 style="font-size: 2rem;">Welcome Back <br>Admin 🖐</h2>
+            <p style="font-weight:500;">Kindly login to continue</p>
+            <input class="light" type="text" id="username" placeholder="username" required>
+            <br>
+            <input class="light" type="password" id="password" placeholder="password" required>
+            <br>
+            <button onclick="login()">Login</button>
+        </div>
     </div>
 </body>
 </html>
