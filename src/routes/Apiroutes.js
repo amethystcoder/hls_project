@@ -5,6 +5,7 @@ const sources = require("../sources/sources")
 const getSourceName = require("../utils/getSourceName")
 const DB = require('../db/DBs')
 const generateUniqueId = require('../utils/generateUniqueId')
+const Streamer = require('../services/streamer')
 
 router.get("/health",(req,res)=>{
     try {
@@ -44,35 +45,79 @@ router.get("/login", async (req,res)=>{
     try {
         //const username = req.body.username
         //const password = req.body.password
-        let users = DB.usersDB.getAllusers()
-        console.log(users)
+        let users = await DB.usersDB.getAllusers()
         for (let index = 0; index < users.length; index++) {
 
         }
-        res.json({users})
+        console.log(users)
+        res.json({users:users})
+    } catch (error) {
+        res.json({error})
+    }
+})
+
+router.get("/stream/:videoid",async (req,res)=>{
+    try {
+        //write code to get this data from the db
+        let range = req.headers.range
+        const videoId = req.params.videoid
+        if (!range) res.status(400).send("Cannot Stream. Range not included in headers")
+        range = Number(range.replace(/\D/g,""));
+        let streamingData = Streamer.streamVideoFile(req,res,videoId,"",range)//we need to be able to determine the kind of source
+        res.writeHead(206,streamingData.headers)
+        streamingData.videoStream.pipe(res)
+    } catch (error) {
+        res.json({error})
+    }
+})
+
+router.get("/hls/:videoid",async (req,res)=>{
+    try {
+        let hlsStreamData = await Streamer.getHlsDataFile(req.params.videoid)
+        res.status(200).send(hlsStreamData)
     } catch (error) {
         res.json({error})
     }
 })
 
 router.post("/server/create",(req,res)=>{
-
+    try {
+        
+    } catch (error) {
+        res.json({error})
+    }
 })
 
 router.post("/p2pstats/create",(req,res)=>{
-    
+    try {
+        
+    } catch (error) {
+        res.json({error})
+    }
 })
 
 router.post("/video/upload",(req,res)=>{
-    
+    try {
+        
+    } catch (error) {
+        res.json({error})
+    }
 })
 
 router.post("/hls/bulkconvert",(req,res)=>{
-    
+    try {
+        
+    } catch (error) {
+        res.json({error})
+    }
 })
 
 router.post("/ads/create",(req,res)=>{
-    
+    try {
+        
+    } catch (error) {
+        res.json({error})
+    }
 })
 
 

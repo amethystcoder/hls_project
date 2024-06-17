@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./static/common_styles.css">
+    <link rel="stylesheet" href="./static/bulk.css">
+    <title>Bulk Convert</title>
+</head>
+<body>
+    <div class="side-div">
+        <%- include('./sections/nav')%>
+    </div>
+    <main>
+        <h1>Bulk Import</h1>
+        <div>
+            <select name="email" id="email" class="light">
+                <option value="one">One</option>
+                <option value="two">Two</option><!-- SET EMAILS SSR-LY LATER -->
+            </select>
+            <div class="card glassy">
+                <span class="links"></span>
+                <span class="bar tab">
+                    <h2>Add new</h2>
+                    <svg fill="#000000" width="30px" height="30px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="M10,13H4a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,19H5V15H9ZM20,3H14a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,20,3ZM19,9H15V5h4Zm1,7H18V14a1,1,0,0,0-2,0v2H14a1,1,0,0,0,0,2h2v2a1,1,0,0,0,2,0V18h2a1,1,0,0,0,0-2ZM10,3H4A1,1,0,0,0,3,4v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,10,3ZM9,9H5V5H9Z"/></svg>
+                </span>
+                <span>
+                    <input type="text" name="add-link" id="add-link" class="light">
+                    <button>Add</button>
+                </span>
+                <button>Import</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

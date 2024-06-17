@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/common_styles.css">
+        <title></title>
+        <script>
+            window.addEventListener("load",(ev)=>{
+                
+            })
+        </script>
+    </head>
+    <body>
+        <div class="side-div">
+            <%- include('./sections/nav')%>
+        </div>
+        <main>
+            <div>
+                <a href="./all">
+                    <button>All</button>
+                </a>
+                <a href="./active">
+                    <button>Active</button>
+                </a>
+                <a href="./paused">
+                    <button>Paused</button>
+                </a>
+                <a href="./broken">
+                    <button>Broken</button>
+                </a>
+            </div>
+            <% if(type == "all"){ %>
+                <div>
+                    <h1>All Links</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td><input type="checkbox" name="" id=""></td>
+                                <td>ID</td>
+                                <td>Title</td>
+                                <td>Source</td>
+                                <td>Quality</td>
+                                <td>Views</td>
+                                <td>Status</td>
+                                <td>Last Updated At</td>
+                                <td>Options</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            <% } %>
+            <% if(type == "active"){ %>
+                <div>
+                    <h1>Active Links</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td><input type="checkbox" name="" id=""></td>
+                                <td>ID</td>
+                                <td>Title</td>
+                                <td>Source</td>
+                                <td>Quality</td>
+                                <td>Views</td>
+                                <td>Status</td>
+                                <td>Last Updated At</td>
+                                <td>Options</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            <% } %>
+            <% if(type == "paused"){ %>
+                <div>
+                    <h1>Paused Links</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td><input type="checkbox" name="" id=""></td>
+                                <td>ID</td>
+                                <td>Title</td>
+                                <td>Source</td>
+                                <td>Quality</td>
+                                <td>Views</td>
+                                <td>Status</td>
+                                <td>Last Updated At</td>
+                                <td>Options</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            <% } %>
+            <% if(type == "broken"){ %>
+                <div>
+                    <h1>Broken Links</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td><input type="checkbox" name="" id=""></td>
+                                <td>ID</td>
+                                <td>Title</td>
+                                <td>Source</td>
+                                <td>Quality</td>
+                                <td>Views</td>
+                                <td>Status</td>
+                                <td>Last Updated At</td>
+                                <td>Options</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            <% } %>
+        </main>
+    </body>
+</html>

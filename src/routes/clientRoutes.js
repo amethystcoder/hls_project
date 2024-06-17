@@ -5,7 +5,7 @@
 
 const expressapp = require('express')
 const router = expressapp.Router({mergeParams:true,strict:false,caseSensitive:true})
-const AppSettings = require('../db/settingsDB')
+const DBs = require('../db/DBs')
 
 router.get('/login',(req,res)=>{
     try {
@@ -36,13 +36,13 @@ router.get('/settings/:section',(req,res)=>{
         let section = req.params.section
         switch (section) {
             case "video":
-                res.render('../template/sections/settings/video')
+                res.render('../template/settings/video')
                 break;
             case "general":
-                res.render('../template/sections/settings/general')
+                res.render('../template/settings/general')
                 break;
             case "proxy":
-                res.render('../template/sections/settings/proxy')
+                res.render('../template/settings/proxy')
                 break;
             default:
                 res.render('../template/settings')
@@ -56,12 +56,81 @@ router.get('/settings/:section',(req,res)=>{
 
 
 //video player
-router.get('/video/:slug',(req,res)=>{
+router.get('/video',(req,res)=>{
     try {
         let routeData = {}
-        let player = AppSettings.getConfig("player")
+        let player = DBs.settingsDB.getConfig("player")
         let slug = req.params.slug
         res.render('../template/players/videojs') //create code to determine the kind of player to use based on config
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/links/:type',(req,res)=>{
+    try {
+        res.render('../template/links',{
+            type:req.params.type
+        })
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/links/new',(req,res)=>{
+    try {
+        let title = "New Link"
+        res.render('../template/linkcreate',{
+            title:title
+        })
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/links/edit/:linkid',async (req,res)=>{
+    try {
+        const linkId = req.params.linkid
+        const linkData = DBs.linksDB.getLinkUsingId(linkId)
+        let title = `Edit link ${linkId}`
+        res.render('../template/linkcreate',{
+            title:title,
+            data:linkData[0]
+        })
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/servers',(req,res)=>{
+    try {
+        res.render('../template/servers')
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/ads',(req,res)=>{
+    try {
+        res.render('../template/ads')
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/hls/:type',(req,res)=>{
+    try {
+        res.render('../template/hls',{
+            type:req.params.type
+        })
+    } catch (error) {
+        res.render('../template/error')
+    }
+})
+
+router.get('/bulk',(req,res)=>{
+    try {
+        res.render('../template/bulk')
     } catch (error) {
         res.render('../template/error')
     }

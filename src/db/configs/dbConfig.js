@@ -1,4 +1,4 @@
-const sql = require('mysql');
+const sql = require('mysql2');
 require('dotenv').config()
 
 let connectionPool = sql.createPool({
@@ -9,6 +9,6 @@ let connectionPool = sql.createPool({
     database: "videodb",
     waitForConnections:true,
     flags:'IGNORE_SPACE'
-});
+}).promise();
 
 module.exports = connectionPool

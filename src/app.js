@@ -11,6 +11,8 @@ if (cpus.length > 0) {
 }
 
 expressApp.use(express.static(path.join(__dirname,'template')))
+expressApp.use(express.static(path.join(__dirname,'utils')))
+expressApp.use(express.static(path.join(__dirname,'uploads')))
 
 const PORT = 3000
 

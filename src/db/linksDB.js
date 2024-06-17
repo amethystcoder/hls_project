@@ -11,13 +11,9 @@ const tableColumnNames = 'acc_id,title,main_link,alt_link,preview_img,data,type,
  * gets the number of items in the table
  * @argument {string} restOfQuery are the other conditions in the query to look for 
  */
-let getCount = (restOfQuery)=>{
+let getCount = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`SELECT COUNT(*) FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`SELECT COUNT(*) FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -25,17 +21,13 @@ let getCount = (restOfQuery)=>{
  * gets the items in the table
  * @argument {string} restOfQuery are the other conditions in the query to look for 
  */
-let get = (restOfQuery)=>{
+let get = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`SELECT * FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`SELECT * FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
-let deletion = (restOfQuery)=>{
+let deletion = (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
     let result;
     dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
@@ -45,7 +37,7 @@ let deletion = (restOfQuery)=>{
     return result;
 }
 
-let update = (set,restOfQuery)=>{
+let update = (set,restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
     let result;
     dbInstance.query(`UPDATE ${table} ${set}  ${where} ${restOfQuery}`,(error,results,fields)=>{
@@ -88,7 +80,7 @@ let getBrokenLinks = (number=false)=>{
  * @argument {string} id
  */
 let getLinkUsingId = (linkId)=>{
-    return get(`id = '${dbInstance.escape(linkId)}'`)
+    return get(`id = ${dbInstance.escape(linkId)}`)
 }
 
 /**

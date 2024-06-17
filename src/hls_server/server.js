@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
 require('dotenv').config()
 //We need to also add rate limiting to this app
 
@@ -10,6 +11,9 @@ require('dotenv').config()
     }
     //we need to get a way to know if there is a new configuration
 }) */
+
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json())
 
 app.set('view engine','ejs')
 

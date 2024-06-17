@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./static/common_styles.css">
+    <link rel="stylesheet" href="./static/servers.css">
+    <title>Servers</title>
+    <script>
+        function deleteServer(id){}
+        function editServer(id){}
+        //turn on or of 
+        function toggleServer(id){}
+    </script>
+</head>
+<body>
+    <div class="side-div">
+        <%- include('./sections/nav')%>
+    </div>
+    <main>
+        <div class="contains-server-list">
+            <h2>Server List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Domain</td>
+                        <td>Type</td>
+                        <td>Playbacks</td>
+                        <td>Status</td>
+                        <td>options</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="contains-server-storage"></div>
+        <div class="server-create glassy">
+            <h2>Add/Edit Server</h2>
+            <div>
+                <span>
+                    <label for="server-name">Name</label>
+                    <input type="text" name="server-name" id="server-name" class="light">
+                </span>
+                <br>
+                <span>
+                    <label for="server-id">Server_ID</label>
+                    <input type="text" name="server-id" id="server-id" class="light">
+                </span>
+                <br>
+                <span>
+                    <label for="server-type">Type</label>
+                    <select name="server-type" id="server-type" class="light">
+                        <option value="stream">Stream</option>
+                        <option value="hls">HLS</option>
+                    </select>
+                </span>
+                <br>
+                <span>
+                    <label for="domain">Domain</label>
+                    <input type="url" name="domain" id="domain" class="light">
+                </span>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
