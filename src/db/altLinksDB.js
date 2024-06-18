@@ -95,17 +95,17 @@ let getaltLinkUsingParentId = (parentId)=>{
  * @argument {Object} alt_linksData object containing alt_links data to be stored... properties include
  * parent_id,link,type,data,status,_order,deleted
  */
-let createNewAltLink = (alt_linkData)=>{
+let createNewAltLink = async (alt_linkData)=>{
     let result;
     if (typeof alt_linksData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
     alt_linkData.updated_at = new Date().toUTCString()
     alt_linkData.created_at = new Date().toUTCString()
     alt_linkData.status = true
-    dbInstance.query(`INSERT INTO ${table}`, alt_linkData,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    dbInstance.query(`INSERT INTO ${table} (parent_id,link,type,data,status,updated_at,created_at,_order,deleted) (??)`, 
+    [alt_linkData.parent_id,alt_linkData.link,alt_linkData.type,alt_linkData.data,
+        alt_linkData.status,alt_linkData.updated_at,alt_linkData.created_at,alt_linkData._order,,
+        alt_linkData.deleted])
     return result;
 }
 

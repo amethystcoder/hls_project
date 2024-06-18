@@ -1,5 +1,6 @@
 let express = require('express')
 const router = express.Router()
+const multer = require('multer')
 const HlsConverter = require("../utils/split_vid/ffmpeg")
 const sources = require("../sources/sources")
 const getSourceName = require("../utils/getSourceName")
@@ -73,7 +74,16 @@ router.get("/stream/:videoid",async (req,res)=>{
 
 router.get("/hls/:videoid",async (req,res)=>{
     try {
-        let hlsStreamData = await Streamer.getHlsDataFile(req.params.videoid)
+        let videoid = req.params.videoid
+        let splitVid = videoid.split(".")
+        let vidExt = splitVid[splitVid.length - 1]
+        let hlsStreamData;
+        if (vidExt && vidExt == "ts") {
+            hlsStreamData = await Streamer.getHlsDataFile(videoid,true)
+        }
+        else{
+            hlsStreamData = await Streamer.getHlsDataFile(videoid)
+        }
         res.status(200).send(hlsStreamData)
     } catch (error) {
         res.json({error})
@@ -82,7 +92,20 @@ router.get("/hls/:videoid",async (req,res)=>{
 
 router.post("/server/create",(req,res)=>{
     try {
-        
+        const {name, domain, type} = req.body
+        DB.serversDB.createNewServer({name,domain,type})
+        res.send(201).json({success:true})
+    } catch (error) {
+        res.json({error})
+    }
+})
+
+router.put("/server/edit/:id",(req,res)=>{
+    try {
+        const id = req.params.id
+        const {name, domain, type} = req.body
+        DB.serversDB.updateUsingId(id,["name","domain","type"],[name,domain,type])
+        res.send(201).json({success:true})
     } catch (error) {
         res.json({error})
     }
@@ -90,13 +113,20 @@ router.post("/server/create",(req,res)=>{
 
 router.post("/p2pstats/create",(req,res)=>{
     try {
-        
+        const {upload,download,peers} = req.body
+        const ipAddress = (req.ip 
+        || req.socket.remoteAddress // incase `trust proxy did not work for some reason` 
+        || req.headers['x-forwarded-for']);
+        const country = "";//get from client
+        const device = "";//get from client
+        const date = new Date().toUTCString();
+        DB.p2pStatsDB.createNewP2PData({upload,download,peers,country,date,device,ipAddress})
     } catch (error) {
         res.json({error})
     }
 })
 
-router.post("/video/upload",(req,res)=>{
+router.post("/video/upload",async (req,res)=>{
     try {
         
     } catch (error) {
@@ -104,17 +134,39 @@ router.post("/video/upload",(req,res)=>{
     }
 })
 
-router.post("/hls/bulkconvert",(req,res)=>{
+router.post("/hls/bulkconvert",async (req,res)=>{
     try {
-        
+        //Attempt to finish up later
+        let servers = req.body.serverIds.split(',')
+        let links = req.body.links.split(',')
+        let availableServers = await DB.serversDB.getServerUsingType("hls")
+        availableServers
+        for (let index = 0; index < servers.length; index++) {
+            let linkSource = getSourceName(link)
+            if (!linkSource || linkSource == '') throw EvalError("Incorrect link provided. Check that the link is either a GDrive, Yandex, Box, OkRu or Direct link")
+            const convert = HlsConverter.createHlsFiles(link)
+            let result = DB.hlsLinksDB.createNewHlsLink()//generateHlsLinkData
+        }
+        res.status(202).send({message:"successful"})
     } catch (error) {
         res.json({error})
     }
 })
 
-router.post("/ads/create",(req,res)=>{
+router.post("/ads/create",async (req,res)=>{
     try {
-        
+        const {title,type} = req.body
+        DB.adsDB.createNewAd({title,type})
+    } catch (error) {
+        res.json({error})
+    }
+})
+
+router.put("/ads/edit/:id",async (req,res)=>{
+    try {
+        const id = req.params.id
+        const {title,type} = req.body
+        DB.adsDB.updateUsingId(id,["title","type"],[title,type])
     } catch (error) {
         res.json({error})
     }

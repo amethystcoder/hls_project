@@ -27,7 +27,7 @@ let get = async (restOfQuery = '')=>{
     return result;
 }
 
-let deletion = (restOfQuery = '')=>{
+let deletion = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
     let result;
     dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
@@ -83,6 +83,7 @@ let getadUsingId = (adsId)=>{
     return get(`id = '${dbInstance.escape(adsId)}'`)
 }
 
+
 /**
  * create a new ads in the database
  * @argument {Object} adsData object containing ads data to be stored... properties include
@@ -92,7 +93,7 @@ let createNewAd = (adsData)=>{
     let result;
     if (typeof adsData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    dbInstance.query(`INSERT INTO ${table}`, adsData,(error,results,fields)=>{
+    dbInstance.query(`INSERT INTO ${table} (title,type,code)`, [adsData.title,adsData.type,adsData.code],(error,results,fields)=>{
         if (error) throw error
         result = results;
     })

@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
 
 app.set('view engine','ejs')
+app.set('trust proxy', true)
 
 const apiRoutes = require('../routes/Apiroutes');
 app.use('/api',apiRoutes);

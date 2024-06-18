@@ -16,46 +16,52 @@
         </script>
     </head>
     <body>
-        <form class="main-link-form">
-            <h1>Create/Edit Link</h1>
-            <span>
-                <label for="file-title">File Title</label>
-                <br>
-                <input type="text" class="light" placeholder="Enter File Title" name="file-title" id="file-title">
-            </span>
-            <br>
-            <span>
-                <label for="link-main">Main Link</label>
-                <br>
-                <input type="text" class="light" placeholder="Enter Main Link to file" name="link-main" id="link-main">
-            </span>
-            <br>
-            <span>
-                <label for="link-alt">Alternate Link</label>
-                <br>
-                <input type="text" class="light" placeholder="Enter File Alternate Links" name="link-alt" id="link-alt">
-            </span>
-            <br>
-            <span>
-                <label for="sub">Subtitle File</label>
-                <br>
-                <input type="file" class="light" accept=".srt,.ttml,.xml,.vtt" id="sub" name="sub">
-            </span>
-            <br>
-            <span>
-                <label for="preview-image">Preview Image</label>
-                <br>
-                <input type="file" class="light" accept=".png,.jpg" name="preview-image" id="preview-image">
-            </span>
-            <button onclick="createLink()">Submit</button>
-        </form>
-        <div>
-            <div>
-                <h2>My HLS</h2>
-                <ul></ul>
-                <button>Convert to HLS</button>
-            </div>
-            <div></div>
+        <div class="side-div">
+            <%- include('./sections/nav')%>
         </div>
+        <main>
+            <%- include('./sections/header')%>
+            <form class="main-link-form">
+                <h1>Create/Edit Link</h1>
+                <span>
+                    <label for="file-title">File Title</label>
+                    <br>
+                    <input type="text" class="light" placeholder="Enter File Title" name="file-title" id="file-title">
+                </span>
+                <br>
+                <span>
+                    <label for="link-main">Main Link</label>
+                    <br>
+                    <input type="text" class="light" placeholder="Enter Main Link to file" name="link-main" id="link-main">
+                </span>
+                <br>
+                <span>
+                    <label for="link-alt">Alternate Link</label>
+                    <br>
+                    <input type="text" class="light" placeholder="Enter File Alternate Links" name="link-alt" id="link-alt">
+                </span>
+                <br>
+                <span>
+                    <label for="sub">Subtitle File</label>
+                    <br>
+                    <input type="file" class="light" accept=".srt,.ttml,.xml,.vtt" id="sub" name="sub">
+                </span>
+                <br>
+                <span>
+                    <label for="preview-image">Preview Image</label>
+                    <br>
+                    <input type="file" class="light" accept=".png,.jpg" name="preview-image" id="preview-image">
+                </span>
+                <button onclick="createLink()">Submit</button>
+            </form>
+            <div>
+                <div>
+                    <h2>My HLS</h2>
+                    <ul></ul>
+                    <button>Convert to HLS</button>
+                </div>
+                <div></div>
+            </div>
+        </main>
     </body>
 </html>

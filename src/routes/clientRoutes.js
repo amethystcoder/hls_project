@@ -11,7 +11,9 @@ router.get('/login',(req,res)=>{
     try {
         res.render('../template/login')
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -19,7 +21,9 @@ router.get('/dashboard',(req,res)=>{
     try {
         res.render('../template/dashboard')
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -27,7 +31,9 @@ router.get('/settings',(req,res)=>{
     try {
         res.render('../template/settings')
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -44,26 +50,33 @@ router.get('/settings/:section',(req,res)=>{
             case "proxy":
                 res.render('../template/settings/proxy')
                 break;
+            case "gdriveAuth":
+            res.render('../template/settings/gdriveAuth')
+            break;
             default:
                 res.render('../template/settings')
                 break;
         }
-        res.render('../template/dashboard')
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
 
 //video player
-router.get('/video',(req,res)=>{
+router.get('/video',async (req,res)=>{
     try {
         let routeData = {}
-        let player = DBs.settingsDB.getConfig("player")
+        let player = await DBs.settingsDB.getConfig("player")
         let slug = req.params.slug
-        res.render('../template/players/videojs') //create code to determine the kind of player to use based on config
+        console.log(player[0].var)
+        res.render('../template/players/plyr') //create code to determine the kind of player to use based on config
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -73,7 +86,9 @@ router.get('/links/:type',(req,res)=>{
             type:req.params.type
         })
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -84,7 +99,9 @@ router.get('/links/new',(req,res)=>{
             title:title
         })
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -98,7 +115,9 @@ router.get('/links/edit/:linkid',async (req,res)=>{
             data:linkData[0]
         })
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -106,7 +125,9 @@ router.get('/servers',(req,res)=>{
     try {
         res.render('../template/servers')
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -114,7 +135,9 @@ router.get('/ads',(req,res)=>{
     try {
         res.render('../template/ads')
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -124,7 +147,9 @@ router.get('/hls/:type',(req,res)=>{
             type:req.params.type
         })
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
@@ -132,7 +157,9 @@ router.get('/bulk',(req,res)=>{
     try {
         res.render('../template/bulk')
     } catch (error) {
-        res.render('../template/error')
+        res.render('../template/error',{
+            error
+        })
     }
 })
 
