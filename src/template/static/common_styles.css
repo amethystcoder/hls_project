@@ -87,3 +87,18 @@ label{
     border: hidden;
     border-radius: 10px;
 }
+.container-with-x{
+    background-color: rgb(18, 18, 73);
+    color: white;
+    border: hidden;
+    padding: 3px;
+    border-radius: 3px;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px;
+}
+.container-with-x>p{
+    margin-left: 15px;
+}

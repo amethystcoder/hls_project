@@ -172,5 +172,22 @@ router.put("/ads/edit/:id",async (req,res)=>{
     }
 })
 
+router.post("/vast_ads/create",async (req,res)=>{
+    try {
+        /* const {title,type} = req.body
+        DB.adsDB.createNewAd({title,type}) */
+    } catch (error) {
+        res.json({error})
+    }
+})
+
+router.post("/bulk",async (req,res)=>{
+    try {
+        
+    } catch (error) {
+        res.json({error})
+    }
+})
+
 
 module.exports = router;

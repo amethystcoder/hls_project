@@ -92,7 +92,7 @@ router.get('/links/:type',(req,res)=>{
     }
 })
 
-router.get('/links/new',(req,res)=>{
+router.get('/link/new',(req,res)=>{
     try {
         let title = "New Link"
         res.render('../template/linkcreate',{
@@ -105,7 +105,7 @@ router.get('/links/new',(req,res)=>{
     }
 })
 
-router.get('/links/edit/:linkid',async (req,res)=>{
+router.get('/link/edit/:linkid',async (req,res)=>{
     try {
         const linkId = req.params.linkid
         const linkData = DBs.linksDB.getLinkUsingId(linkId)
