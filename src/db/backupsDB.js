@@ -27,23 +27,15 @@ let get = async (restOfQuery = '')=>{
     return result;
 }
 
-let deletion = (restOfQuery = '')=>{
+let deletion = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
-let update = (set = '',restOfQuery = '')=>{
+let update = async (set = '',restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -51,9 +43,9 @@ let update = (set = '',restOfQuery = '')=>{
  * gets all available backup_drives
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllbackup_drives = (number=false)=>{
-    if (number) return getCount()
-    return get()
+let getAllbackup_drives = async (number=false)=>{
+    if (number) return await getCount()
+    return await get()
 }
 
 //
@@ -61,32 +53,42 @@ let getAllbackup_drives = (number=false)=>{
  * gets all active backup_drives
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getActivebackup_drives = (number=false)=>{
-    if (number) return getCount("status = true")
-    return get("status = true")
+let getActivebackup_drives = async (number=false)=>{
+    if (number) return await getCount("status = true")
+    return await get("status = true")
 }
 
-
+/**
+ * gets a distinct column from the table
+ * @param {string} name the name of the column
+ * @param {string} restOfQuery are the other conditions in the query to look for 
+ */
+let getDistinct = async (name,restOfQuery = '')=>{
+    name = name ? name : "*"
+    let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
+    let [result] = await dbInstance.query(`SELECT ${name} FROM ${table} ${where} ${restOfQuery}`)
+    return result;
+}
 
 /**
  * @argument {string} id
  */
-let getBackupUsingId = (Id)=>{
-    return get(`id = '${dbInstance.escape(Id)}'`)
+let getBackupUsingId = async (Id)=>{
+    return await get(`id = '${dbInstance.escape(Id)}'`)
 }
 
 /**
  * @argument {string} fileId
  */
-let getBackupUsingFileId = (fileId)=>{
-    return get(`file_id = '${dbInstance.escape(fileId)}'`)
+let getBackupUsingFileId = async (fileId)=>{
+    return await get(`file_id = '${dbInstance.escape(fileId)}'`)
 }
 
 /**
  * @argument {string} linkId
  */
-let getBackupUsingLinkId = (linkId)=>{
-    return get(`link_id = '${dbInstance.escape(linkId)}'`)
+let getBackupUsingLinkId = async (linkId)=>{
+    return await get(`link_id = '${dbInstance.escape(linkId)}'`)
 }
 
 
@@ -95,15 +97,12 @@ let getBackupUsingLinkId = (linkId)=>{
  * @argument {Object} BackupData object containing backup_drives data to be stored... properties include
  * id,link_id,acc_id,file_id,status
  */
-let createNewBackup = (BackupData)=>{
-    let result;
+let createNewBackup = async (BackupData)=>{
     if (typeof BackupData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
     BackupData.status = true
-    dbInstance.query(`INSERT INTO ${table}`, BackupData,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let result = await dbInstance.query(`INSERT INTO ${table} (link_id,acc_id,file_id,status) VALUES (?,?,?,?)`, [
+        BackupData.link_id,BackupData.acc_id,BackupData.file_id,BackupData.status])
     return result;
 }
 
@@ -113,7 +112,7 @@ let createNewBackup = (BackupData)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let updateUsingId = (id,column,value)=>{
+let updateUsingId = async (id,column,value)=>{
     let updateColumnBlacklists = ["id","link_id","acc_id"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
@@ -124,12 +123,12 @@ let updateUsingId = (id,column,value)=>{
             }
         }
         set = set.substring(0,set.length - 1)
-        return update(set,queryConditional)
+        return await update(set,queryConditional)
     }
     if (typeof column == 'string' && typeof value == 'string'){
         if (!updateColumnBlacklists.includes(column)) {
             set += `${column} = '${value}'`;
-            return update(set,queryConditional)   
+            return await update(set,queryConditional)   
         }
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
@@ -138,8 +137,8 @@ let updateUsingId = (id,column,value)=>{
 /**
  * deletes a backup_drives using its ID
  */
-let deleteUsingId = (id)=>{
-    return deletion(`id = '${id}'`);
+let deleteUsingId = async (id)=>{
+    return await deletion(`id = '${id}'`);
 }
 
 /**
@@ -148,23 +147,24 @@ let deleteUsingId = (id)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let customDelete = (column,value)=>{
+let customDelete = async (column,value)=>{
     let queryConditions = ""
     if (Array.isArray(column) && Array.isArray(value)) {
         queryConditions = `'${column[0]}' = '${value[0]}'`;
         for (let index = 1; index < column.length; index++) {
             queryConditions += `AND ${column[index]} = '${value[index]}'`;
         }
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     if (typeof column == 'string' && typeof value == 'string') {
         queryConditions = `${column} = '${value}'`;
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
 }
 
 module.exports = {
+    getDistinct,
     getActivebackup_drives,
     getAllbackup_drives,
     createNewBackup,

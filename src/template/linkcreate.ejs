@@ -4,14 +4,29 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../static/common_styles.css">
-        <link rel="stylesheet" href="../static/links.css">
+        <link rel="stylesheet" href="../static/linkCU.css">
         <title><%=title%></title>
         <script>
-            window.addEventListener("load",(ev)=>{
-                
+            window.addEventListener("DOMContentLoaded",(ev)=>{
+                let linkForm = document.querySelector(".main-link-form")
+                linkForm.addEventListener("submit",(ev)=>{
+                    ev.preventDefault()
+                    let formdata = new FormData(linkForm)
+                    fetch("../api/link/create",{
+                        method:"POST",
+                        body:formdata
+                    }).then(Response=>Response.json())
+                    .then(body=>{console.log(body)})
+                    .catch(error=>{console.log(error)})
+                })
             })
-            function createLink(){
-
+            function convertHLS(){
+                fetch("../api/convert/hls",{
+                    method:"POST",
+                    body:formdata
+                }).then(Response=>Response.json())
+                .then(body=>{console.log(body)})
+                .catch(error=>{console.log(error)})
             }
         </script>
     </head>
@@ -21,44 +36,44 @@
         </div>
         <main>
             <%- include('./sections/header')%>
-            <form class="main-link-form">
+            <form class="main-link-form glass card">
                 <h1>Create/Edit Link</h1>
                 <span>
-                    <label for="file-title">File Title</label>
+                    <label for="title">File Title</label>
                     <br>
-                    <input type="text" class="light" placeholder="Enter File Title" name="file-title" id="file-title">
+                    <input type="text" class="light" placeholder="Enter File Title" name="title" id="title">
                 </span>
                 <br>
                 <span>
-                    <label for="link-main">Main Link</label>
+                    <label for="main_link">Main Link</label>
                     <br>
-                    <input type="text" class="light" placeholder="Enter Main Link to file" name="link-main" id="link-main">
+                    <input type="text" class="light" placeholder="Enter Main Link to file" name="main_link" id="main_link">
                 </span>
                 <br>
                 <span>
-                    <label for="link-alt">Alternate Link</label>
+                    <label for="alt_link">Alternate Link</label>
                     <br>
-                    <input type="text" class="light" placeholder="Enter File Alternate Links" name="link-alt" id="link-alt">
+                    <input type="text" class="light" placeholder="Enter File Alternate Links" name="alt_link" id="alt_link">
                 </span>
                 <br>
                 <span>
-                    <label for="sub">Subtitle File</label>
+                    <label for="subtitles">Subtitle File</label>
                     <br>
-                    <input type="file" class="light" accept=".srt,.ttml,.xml,.vtt" id="sub" name="sub">
+                    <input type="file" class="light" accept=".srt,.ttml,.xml,.vtt" id="subtitles" name="subtitles">
                 </span>
                 <br>
                 <span>
-                    <label for="preview-image">Preview Image</label>
+                    <label for="preview_img">Preview Image</label>
                     <br>
-                    <input type="file" class="light" accept=".png,.jpg" name="preview-image" id="preview-image">
+                    <input type="file" class="light" accept=".png,.jpg" name="preview_img" id="preview_img">
                 </span>
-                <button onclick="createLink()">Submit</button>
+                <button>Submit</button>
             </form>
             <div>
                 <div>
                     <h2>My HLS</h2>
                     <ul></ul>
-                    <button>Convert to HLS</button>
+                    <button onclick="convertHLS()">Convert to HLS</button>
                 </div>
                 <div></div>
             </div>

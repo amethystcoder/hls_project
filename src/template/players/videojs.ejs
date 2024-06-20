@@ -16,7 +16,7 @@
             autoplay: true,
             controls:true,
             sources : [{
-                src:"http://localhost:3000/api/hls/Alan_Walker_-_Faded",
+                src:"http://localhost:3000/api/hls/<%=slug%>",
                 type:"application/x-mpegURL"//change to 'video/mp4' for normal mp4 files
             }]
         }
@@ -28,7 +28,7 @@
                     liveSyncDurationCount: 7,
                     loader: engine.createLoaderClass()
                 })
-                hls.loadSource('http://localhost:3000/api/hls/Alan_Walker_-_Faded')
+                hls.loadSource('http://localhost:3000/api/hls/<%=slug%>')
                 hls.attachMedia(player.el())
             }
         })
@@ -36,7 +36,7 @@
 </head>
 <body>
     <video id="video" class="video-js vjs-default-skin" controls playsinline>
-        <source src="http://localhost:3000/api/hls/Alan_Walker_-_Faded" type="application\x-mpegURL">
+        <source src="http://localhost:3000/api/hls/<%=slug%>" type="application\x-mpegURL">
     </video>
 </body>
 </html>

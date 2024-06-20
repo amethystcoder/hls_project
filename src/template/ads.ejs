@@ -12,6 +12,9 @@
             popAdCreate.addEventListener("submit",async (ev)=>{
                 ev.preventDefault()
                 let formdata = new FormData(popAdCreate)
+                let data = {
+                    ad:formdata.get("ad")
+                }
                 try{
                     let dataResult = await fetch("../api/vast_ads/create",{
                         method:"POST",
@@ -26,10 +29,19 @@
             vastAdCreate.addEventListener("submit",async (ev)=>{
                 ev.preventDefault()
                 let formdata = new FormData(vastAdCreate)
+                let data = {
+                    title:formdata.get("title"),
+                    type:formdata.get("type"),
+                    xml_file:formdata.get("xml-file"),
+                    start_offset:formdata.get("start-offset"),
+                }
                 try{
                     let dataResult = await fetch("../api/ads/create",{
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
                         method:"POST",
-                        body:formdata
+                        body:JSON.stringify(data)
                     })
                 }
                 catch(error){
@@ -63,7 +75,7 @@
         </div>
         <form class="pop-ad-create glassy">
             <h2>Pop Ads</h2>
-            <textarea name="pop-ad" id="pop-ad" required>
+            <textarea name="ad" id="ad" required>
                 
             </textarea>
             <button>Save popad</button>
@@ -72,13 +84,13 @@
             <h2>Add/Edit Vast ad</h2>
             <div>
                 <span>
-                    <label for="ad-title">Title</label>
-                    <input type="text" name="ad-title" id="ad-title" class="light" required>
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title" class="light" required>
                 </span>
                 <br>
                 <span>
-                    <label for="ad-type">Ad Type</label>
-                    <select name="ad-type" id="ad-type" class="light" required>
+                    <label for="type">Ad Type</label>
+                    <select name="type" id="type" class="light" required>
                         <option value="banner">Banner</option>
                         <option value="video">Video</option>
                     </select>

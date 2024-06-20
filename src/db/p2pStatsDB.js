@@ -27,23 +27,15 @@ let get = async (restOfQuery = '')=>{
     return result;
 }
 
-let deletion = (restOfQuery = '')=>{
+let deletion = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
-let update = (set = '',restOfQuery = '')=>{
+let update = async (set = '',restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -51,9 +43,9 @@ let update = (set = '',restOfQuery = '')=>{
  * gets all available p2p_stats
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllp2p_stats = (number=false)=>{
-    if (number) return getCount()
-    return get()
+let getAllp2p_stats = async (number=false)=>{
+    if (number) return await getCount()
+    return await get()
 }
 
 //
@@ -62,9 +54,9 @@ let getAllp2p_stats = (number=false)=>{
  * @argument {boolean} number determines whether to just send the number of items in storage 
  * @argument {string} country 
  */
-let getp2p_statsByCountry = (number=false,country)=>{
-    if (number) return getCount(`country = '${country}'`)
-    return get(`country = '${country}'`)
+let getp2p_statsByCountry = async (number=false,country)=>{
+    if (number) return await getCount(`country = '${country}'`)
+    return await get(`country = '${country}'`)
 }
 
 
@@ -74,26 +66,33 @@ let getp2p_statsByCountry = (number=false,country)=>{
  * @argument {boolean} number determines whether to just send the number of items in storage
  * @argument {string} deviceName  
  */
-let getp2p_statsByDevice = (number=false,deviceName)=>{
-    if (number) return getCount(`device = '${deviceName}'`)
-    return get(`device = '${deviceName}'`)
+let getp2p_statsByDevice = async (number=false,deviceName)=>{
+    if (number) return await getCount(`device = '${deviceName}'`)
+    return await get(`device = '${deviceName}'`)
 }
 
+/**
+ * gets a distinct column from the table
+ * @param {string} name the name of the column
+ * @param {string} restOfQuery are the other conditions in the query to look for 
+ */
+let getDistinct = async (name,restOfQuery = '')=>{
+    name = name ? name : "*"
+    let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
+    let [result] = await dbInstance.query(`SELECT ${name} FROM ${table} ${where} ${restOfQuery}`)
+    return result;
+}
 
 /**
  * create a new p2p_stats in the database
  * @argument {Object} P2PData object containing p2p_stats data to be stored... properties include
  * upload,download,peers,ipAddress,country,device
  */
-let createNewP2PData = (P2PData)=>{
-    let result;
+let createNewP2PData = async (P2PData)=>{
     if (typeof P2PData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
     P2PData.date = new Date().toUTCString()
-    dbInstance.query(`INSERT INTO ${table}`, P2PData,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let result = await dbInstance.query(`INSERT INTO ${table} (upload,download,peers,ipAddress,country,device,date) VALUES (?,?,?,?,?,?,?)`, [P2PData.upload,P2PData.download,P2PData.peers,P2PData.ipAddress,P2PData.country,P2PData.device,P2PData.date])
     return result;
 }
 
@@ -103,7 +102,7 @@ let createNewP2PData = (P2PData)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let updateUsingId = (id,column,value)=>{
+let updateUsingId = async (id,column,value)=>{
     let updateColumnBlacklists = ["id"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
@@ -114,12 +113,12 @@ let updateUsingId = (id,column,value)=>{
             }
         }
         set = set.substring(0,set.length - 1)
-        return update(set,queryConditional)
+        return await update(set,queryConditional)
     }
     if (typeof column == 'string' && typeof value == 'string'){
         if (!updateColumnBlacklists.includes(column)) {
             set += `${column} = '${value}'`;
-            return update(set,queryConditional)   
+            return await update(set,queryConditional)   
         }
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
@@ -128,8 +127,8 @@ let updateUsingId = (id,column,value)=>{
 /**
  * deletes a p2p_stats using its ID
  */
-let deleteUsingId = (id)=>{
-    return deletion(`id = '${id}'`);
+let deleteUsingId = async (id)=>{
+    return await deletion(`id = '${id}'`);
 }
 
 /**
@@ -138,23 +137,24 @@ let deleteUsingId = (id)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let customDelete = (column,value)=>{
+let customDelete = async (column,value)=>{
     let queryConditions = ""
     if (Array.isArray(column) && Array.isArray(value)) {
         queryConditions = `'${column[0]}' = '${value[0]}'`;
         for (let index = 1; index < column.length; index++) {
             queryConditions += `AND ${column[index]} = '${value[index]}'`;
         }
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     if (typeof column == 'string' && typeof value == 'string') {
         queryConditions = `${column} = '${value}'`;
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
 }
 
 module.exports = {
+    getDistinct,
     getp2p_statsByCountry,
     createNewP2PData,
     getp2p_statsByDevice,

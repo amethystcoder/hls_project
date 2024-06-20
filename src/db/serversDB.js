@@ -5,7 +5,16 @@ const dbInstance = require('../db/configs/dbConfig')
 
 const table = "servers";
 
-const tableColumnNames = 'id,name,domain,type,playbacks,is_broken,status,is_deleted';
+const tableColumnNames = 'name,domain,type,playbacks,is_broken,status,is_deleted';
+
+let queryQuestionCreate = (columns) =>{
+    let listOfColumns = columns.split(",")
+    let result = ""
+    for (let index = 0; index < listOfColumns.length - 1; index++) {
+        result += "?,"
+    }
+    return result + "?"
+}
 
 /**
  * gets the number of items in the table
@@ -14,6 +23,18 @@ const tableColumnNames = 'id,name,domain,type,playbacks,is_broken,status,is_dele
 let getCount = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
     let [result] = await dbInstance.query(`SELECT COUNT(*) FROM ${table} ${where} ${restOfQuery}`)
+    return result;
+}
+
+/**
+ * gets a distinct column from the table
+ * @param {string} name the name of the column
+ * @param {string} restOfQuery are the other conditions in the query to look for 
+ */
+let getDistinct = async (name,restOfQuery = '')=>{
+    name = name ? name : "*"
+    let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
+    let [result] = await dbInstance.query(`SELECT ${name} FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -27,23 +48,15 @@ let get = async (restOfQuery = '')=>{
     return result;
 }
 
-let deletion = (restOfQuery = '')=>{
+let deletion = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
-let update = (set = '',restOfQuery = '')=>{
+let update = async (set = '',restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -51,9 +64,9 @@ let update = (set = '',restOfQuery = '')=>{
  * gets all available servers
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllservers = (number=false)=>{
-    if (number) return getCount()
-    return get()
+let getAllservers = async (number=false)=>{
+    if (number) return await getCount()
+    return await get()
 }
 
 //
@@ -61,9 +74,9 @@ let getAllservers = (number=false)=>{
  * gets all active servers
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getActiveservers = (number=false)=>{
-    if (number) return getCount("status = true")
-    return get("status = true")
+let getActiveservers = async (number=false)=>{
+    if (number) return await getCount("status = true")
+    return await get("status = true")
 }
 
 
@@ -71,45 +84,45 @@ let getActiveservers = (number=false)=>{
 /**
  * @argument {string} id
  */
-let getServerUsingId = (Id)=>{
-    return get(`id = '${dbInstance.escape(Id)}'`)
+let getServerUsingId = async (Id)=>{
+    return await get(`id = '${dbInstance.escape(Id)}'`)
 }
 
 /**
  * @argument {string} type
  */
-let getServerUsingType = (type)=>{
-    return get(`type = '${dbInstance.escape(type)}'`)
+let getServerUsingType = async (type)=>{
+    return await get(`type = '${dbInstance.escape(type)}'`)
 }
 
 /**
  * @argument {string} name
  */
-let getServerUsingName = (name)=>{
-    return get(`name = '${dbInstance.escape(name)}'`)
+let getServerUsingName = async (name)=>{
+    return await get(`name = '${dbInstance.escape(name)}'`)
 }
 
 /**
  * @argument {string} domain
  */
-let getServerUsingDomain = (domain)=>{
-    return get(`domain = '${dbInstance.escape(domain)}'`)
+let getServerUsingDomain = async (domain)=>{
+    return await get(`domain = '${dbInstance.escape(domain)}'`)
 }
 
 /**
  *
  */
-let getBrokenServer = (number=false)=>{
+let getBrokenServer = async (number=false)=>{
     if (number) return getCount("is_broken = true")
-    return get("is_broken = true")
+    return await get("is_broken = true")
 }
 
 /**
  *
  */
-let getDeletedServer = (number=false)=>{
+let getDeletedServer = async (number=false)=>{
     if (number) return getCount("is_deleted = true")
-    return get("is_deleted = true")
+    return await get("is_deleted = true")
 }
 
 /**
@@ -117,16 +130,13 @@ let getDeletedServer = (number=false)=>{
  * @argument {Object} serversData object containing servers data to be stored... properties include
  * name,domain,type,playbacks,is_broken,status,is_deleted
  */
-let createNewServer = (serverData)=>{
-    let result;
-    if (typeof serversData != 'object') throw TypeError("argument type is not correct, it should be an object")
+let createNewServer = async (serverData)=>{
+    if (typeof serverData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
     serverData.status = true
-    dbInstance.query(`INSERT INTO ${table}`, serverData,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
-    return result;
+    let [results] = await dbInstance.query(`INSERT INTO ${table} (name,domain,type) VALUES (?,?,?)`, 
+    [serverData.name,serverData.domain,serverData.type])
+    return results;
 }
 
 /**
@@ -135,7 +145,7 @@ let createNewServer = (serverData)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let updateUsingId = (id,column,value)=>{
+let updateUsingId = async (id,column,value)=>{
     let updateColumnBlacklists = ["id"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
@@ -146,12 +156,12 @@ let updateUsingId = (id,column,value)=>{
             }
         }
         set = set.substring(0,set.length - 1)
-        return update(set,queryConditional)
+        return await update(set,queryConditional)
     }
     if (typeof column == 'string' && typeof value == 'string'){
         if (!updateColumnBlacklists.includes(column)) {
             set += `${column} = '${value}'`;
-            return update(set,queryConditional)   
+            return await update(set,queryConditional)   
         }
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
@@ -160,8 +170,8 @@ let updateUsingId = (id,column,value)=>{
 /**
  * deletes a servers using its ID
  */
-let deleteUsingId = (id)=>{
-    return deletion(`id = '${id}'`);
+let deleteUsingId = async (id)=>{
+    return await deletion(`id = '${id}'`);
 }
 
 /**
@@ -170,23 +180,24 @@ let deleteUsingId = (id)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let customDelete = (column,value)=>{
+let customDelete = async (column,value)=>{
     let queryConditions = ""
     if (Array.isArray(column) && Array.isArray(value)) {
         queryConditions = `'${column[0]}' = '${value[0]}'`;
         for (let index = 1; index < column.length; index++) {
             queryConditions += `AND ${column[index]} = '${value[index]}'`;
         }
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     if (typeof column == 'string' && typeof value == 'string') {
         queryConditions = `${column} = '${value}'`;
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
 }
 
 module.exports = {
+    getDistinct,
     getServerUsingId,
     getDeletedServer,
     createNewServer,

@@ -27,23 +27,27 @@ let get = async (restOfQuery = '')=>{
     return result;
 }
 
-let deletion = (restOfQuery = '')=>{
+/**
+ * gets a distinct column from the table
+ * @param {string} name the name of the column
+ * @param {string} restOfQuery are the other conditions in the query to look for 
+ */
+let getDistinct = async (name,restOfQuery = '')=>{
+    name = name ? name : "*"
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`SELECT ${name} FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
-let update = (set = '',restOfQuery = '')=>{
+let deletion = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`)
+    return result;
+}
+
+let update = async (set = '',restOfQuery = '')=>{
+    let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
+    let [result] = await dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -51,9 +55,9 @@ let update = (set = '',restOfQuery = '')=>{
  * gets all available drive_auth
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAlldrive_auth = (number=false)=>{
-    if (number) return getCount()
-    return get()
+let getAlldrive_auth = async (number=false)=>{
+    if (number) return await getCount()
+    return await get()
 }
 
 //
@@ -61,9 +65,9 @@ let getAlldrive_auth = (number=false)=>{
  * gets all active drive_auth
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getActivedrive_auth = (number=false)=>{
-    if (number) return getCount("status = true")
-    return get("status = true")
+let getActivedrive_auth = async (number=false)=>{
+    if (number) return await getCount("status = true")
+    return await get("status = true")
 }
 
 
@@ -71,15 +75,15 @@ let getActivedrive_auth = (number=false)=>{
 /**
  * @argument {string} id
  */
-let getAuthUsingId = (drive_authId)=>{
-    return get(`id = '${dbInstance.escape(drive_authId)}'`)
+let getAuthUsingId = async (drive_authId)=>{
+    return await get(`id = '${dbInstance.escape(drive_authId)}'`)
 }
 
 /**
  * @argument {string} Email
  */
-let getAuthUsingEmail = (Email)=>{
-    return get(`email = '${dbInstance.escape(Email)}'`)
+let getAuthUsingEmail = async (Email)=>{
+    return await get(`email = '${dbInstance.escape(Email)}'`)
 }
 
 /**
@@ -87,17 +91,14 @@ let getAuthUsingEmail = (Email)=>{
  * @argument {Object} drive_authData object containing drive_auth data to be stored... properties include
  * client_id,client_secret,refresh_token,access_token,email,status
  */
-let createNewAuth = (drive_authData)=>{
-    let result;
+let createNewAuth = async (drive_authData)=>{
     if (typeof drive_authData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
     drive_authData.updated_at = new Date().toUTCString()
     drive_authData.created_at = new Date().toUTCString()
     drive_authData.status = true
-    dbInstance.query(`INSERT INTO ${table}`, drive_authData,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let result = await dbInstance.query(`INSERT INTO ${table} (client_id,client_secret,refresh_token,updated_at,created_at,access_token,email,status) VALUES (?,?,?,?,?,?)`, 
+    [drive_authData.client_id,drive_authData.client_secret,drive_authData.refresh_token,drive_authData.updated_at,drive_authData.created_at,drive_authData.access_token,drive_authData.email,drive_authData.status])
     return result;
 }
 
@@ -107,7 +108,7 @@ let createNewAuth = (drive_authData)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let updateUsingId = (id,column,value)=>{
+let updateUsingId = async (id,column,value)=>{
     let updateColumnBlacklists = ["id","created_at","updated_at"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
@@ -118,12 +119,12 @@ let updateUsingId = (id,column,value)=>{
             }
         }
         set = set.substring(0,set.length - 1)
-        return update(set,queryConditional)
+        return await update(set,queryConditional)
     }
     if (typeof column == 'string' && typeof value == 'string'){
         if (!updateColumnBlacklists.includes(column)) {
             set += `${column} = '${value}'`;
-            return update(set,queryConditional)   
+            return await update(set,queryConditional)   
         }
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
@@ -132,15 +133,15 @@ let updateUsingId = (id,column,value)=>{
 /**
  * deletes a drive_auth using its ID
  */
-let deleteUsingId = (id)=>{
-    return deletion(`id = '${id}'`);
+let deleteUsingId = async (id)=>{
+    return await deletion(`id = '${id}'`);
 }
 
 /**
  * deletes a drive_auth using its Email
  */
-let deleteUsingEmail = (Email)=>{
-    return deletion(`email = '${Email}'`);
+let deleteUsingEmail = async (Email)=>{
+    return await deletion(`email = '${Email}'`);
 }
 
 /**
@@ -149,23 +150,24 @@ let deleteUsingEmail = (Email)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let customDelete = (column,value)=>{
+let customDelete = async (column,value)=>{
     let queryConditions = ""
     if (Array.isArray(column) && Array.isArray(value)) {
         queryConditions = `'${column[0]}' = '${value[0]}'`;
         for (let index = 1; index < column.length; index++) {
             queryConditions += `AND ${column[index]} = '${value[index]}'`;
         }
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     if (typeof column == 'string' && typeof value == 'string') {
         queryConditions = `${column} = '${value}'`;
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
 }
 
 module.exports = {
+    getDistinct,
     getActivedrive_auth,
     getAlldrive_auth,
     getAuthUsingId,

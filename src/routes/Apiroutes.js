@@ -7,6 +7,9 @@ const getSourceName = require("../utils/getSourceName")
 const DB = require('../db/DBs')
 const generateUniqueId = require('../utils/generateUniqueId')
 const Streamer = require('../services/streamer')
+//const bcrypt = require('bcrypt')
+
+const upload = multer({dest: "../uploads/"})
 
 router.get("/health",(req,res)=>{
     try {
@@ -29,14 +32,18 @@ router.post("/convert/hls",(req,res)=>{
     }
 })
 
-router.post("/link/create",(req,res)=>{
+router.post("/link/create",upload.fields([
+    {name:'subtitles',maxCount:1},{name:'preview_img',maxCount:1}]),async (req,res)=>{
     try {
-        const mainLink = req.body.mainLink
-        let linkSource = getSourceName(mainLink)
+        const {title,main_link,alt_link,subtitles,preview_img} = req.body
+        console.log(req.files)
+        console.log(req.body)
+        let linkSource = getSourceName(main_link)
         req.body.type = linkSource
         req.body.slug = generateUniqueId(50)
         if (!linkSource || linkSource == '') throw EvalError("Incorrect link provided. Check that the link is either a GDrive, Yandex, Box, OkRu or Direct link")
-        DB.linksDB.createNewLink(req.body)
+        let newLinkCreate = await DB.linksDB.createNewLink(req.body)
+        res.status(201).json({success:true,message:newLinkCreate})
     } catch (error) {
         res.json({error})
     }
@@ -44,13 +51,14 @@ router.post("/link/create",(req,res)=>{
 
 router.get("/login", async (req,res)=>{
     try {
-        //const username = req.body.username
-        //const password = req.body.password
+        const username = req.body.username
+        const password = req.body.password
         let users = await DB.usersDB.getAllusers()
         for (let index = 0; index < users.length; index++) {
-
+            if (users[index].username == username) {
+                
+            }
         }
-        console.log(users)
         res.json({users:users})
     } catch (error) {
         res.json({error})
@@ -90,22 +98,22 @@ router.get("/hls/:videoid",async (req,res)=>{
     }
 })
 
-router.post("/server/create",(req,res)=>{
+router.post("/server/create",async (req,res)=>{
     try {
         const {name, domain, type} = req.body
-        DB.serversDB.createNewServer({name,domain,type})
-        res.send(201).json({success:true})
+        let createServer = await DB.serversDB.createNewServer({name,domain,type})
+        res.status(201).json({success:true,message:createServer})
     } catch (error) {
         res.json({error})
     }
 })
 
-router.put("/server/edit/:id",(req,res)=>{
+router.put("/server/edit/:id",async (req,res)=>{
     try {
         const id = req.params.id
         const {name, domain, type} = req.body
-        DB.serversDB.updateUsingId(id,["name","domain","type"],[name,domain,type])
-        res.send(201).json({success:true})
+        let updateServer = await DB.serversDB.updateUsingId(id,["name","domain","type"],[name,domain,type])
+        res.status(201).json({success:true})
     } catch (error) {
         res.json({error})
     }
@@ -156,7 +164,7 @@ router.post("/hls/bulkconvert",async (req,res)=>{
 router.post("/ads/create",async (req,res)=>{
     try {
         const {title,type} = req.body
-        DB.adsDB.createNewAd({title,type})
+        await DB.adsDB.createNewAd({title,type})
     } catch (error) {
         res.json({error})
     }
@@ -166,7 +174,7 @@ router.put("/ads/edit/:id",async (req,res)=>{
     try {
         const id = req.params.id
         const {title,type} = req.body
-        DB.adsDB.updateUsingId(id,["title","type"],[title,type])
+        await DB.adsDB.updateUsingId(id,["title","type"],[title,type])
     } catch (error) {
         res.json({error})
     }
@@ -183,7 +191,8 @@ router.post("/vast_ads/create",async (req,res)=>{
 
 router.post("/bulk",async (req,res)=>{
     try {
-        
+        const {links,email} = req.body
+        console.log(req.body)
     } catch (error) {
         res.json({error})
     }

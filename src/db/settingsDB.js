@@ -27,23 +27,15 @@ let get = async (restOfQuery = '')=>{
     return result;
 }
 
-let deletion = (restOfQuery = '')=>{
+let deletion = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
-let update = (set = '',restOfQuery = '')=>{
+let update = async (set = '',restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`UPDATE ${table} ${set}  ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -51,17 +43,17 @@ let update = (set = '',restOfQuery = '')=>{
  * gets all available settings
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllsettings = (number=false)=>{
-    if (number) return getCount()
-    return get()
+let getAllsettings = async (number=false)=>{
+    if (number) return await getCount()
+    return await get()
 }
 
 /**
  * gets a particular configuation or setting
  * @argument {string} setting The configuration to look for 
  */
-let getConfig = (setting)=>{
-    return get(`config='${setting}'`)
+let getConfig = async (setting)=>{
+    return await get(`config='${setting}'`)
 }
 
 /**
@@ -69,20 +61,20 @@ let getConfig = (setting)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let updateSettings = (column,value)=>{
+let updateSettings = async (column,value)=>{
     let queryConditional = ``
     let set = 'SET '
     if (Array.isArray(column) && Array.isArray(value)) {
         for (let index = 0; index < column.length; index++) {
             set += `var = '${value[index]}'`
             queryConditional = `config = '${column[index]}'`
-            update(set,queryConditional)
+            await update(set,queryConditional)
         }
     }
     if (typeof column == 'string' && typeof value == 'string'){
         set += `var = '${value}'`;
         queryConditional = `config = '${column}'`
-        return update(set,queryConditional)   
+        return await update(set,queryConditional)   
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
 }
@@ -94,18 +86,18 @@ let updateSettings = (column,value)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let customDelete = (column,value)=>{
+let customDelete = async (column,value)=>{
     let queryConditions = ""
     if (Array.isArray(column) && Array.isArray(value)) {
         queryConditions = `'${column[0]}' = '${value[0]}'`;
         for (let index = 1; index < column.length; index++) {
             queryConditions += `AND ${column[index]} = '${value[index]}'`;
         }
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     if (typeof column == 'string' && typeof value == 'string') {
         queryConditions = `${column} = '${value}'`;
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
 }

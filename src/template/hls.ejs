@@ -46,7 +46,19 @@
                             <td>Watch</td>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <% hlsData.forEach((hls)=>{ %>
+                            <tr>
+                                <td><%= hls.id %></td>
+                                <td><%= hls.title %></td>
+                                <td>Main</td><!-- Will add server later after seperating duties -->
+                                <td><%= hls.status %></td>
+                                <td><%= hls.slug %></td>
+                                <td><%= hls.created_at %></td>
+                                <td class="bar"></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
                 </table>
             </div>
         <% } %>

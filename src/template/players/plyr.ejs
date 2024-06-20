@@ -15,7 +15,7 @@
 
         window.addEventListener("DOMContentLoaded",()=>{
             let player = document.getElementById("video")
-            let videoPath = 'http://localhost:3000/api/hls/Alan_Walker_-_Faded'
+            let videoPath = 'http://localhost:3000/api/hls/<%=slug%>'
             let engine = new p2pml.hlsjs.Engine()
             if(isHls && engine){
                 let hls = new Hls({
@@ -37,6 +37,6 @@
     </script>
 </head>
 <body>
-    <video src="http://localhost:3000/api/hls/Alan_Walker_-_Faded" id="video"></video>
+    <video src="http://localhost:3000/api/hls/<%=slug%>" id="video"></video>
 </body>
 </html>

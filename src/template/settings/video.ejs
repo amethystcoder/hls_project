@@ -48,7 +48,7 @@
                         <h3>Video Player</h3>
                         <p>Select your default player</p>
                     </span>
-                    <select name="default-player" id="default-player" class="light">
+                    <select name="default-player" id="default-player" value="<%=settings.player%>" class="light">
                         <option value="jw">JW Player</option>
                         <option value="plyr">Plyr.io</option>
                         <option value="videojs">VideoJS</option>
@@ -59,7 +59,7 @@
                         <h3>JW Player License</h3>
                         <p>Add your jw player license</p>
                     </span>
-                    <input type="text" class="light" placeholder="Add your jw player license" id="jw-license" name="jw-license">
+                    <input type="text" class="light" placeholder="Add your jw player license" value="<%=settings.jw_license%>" id="jw-license" name="jw-license">
                 </span>
                 <!-- More to add here, check back later -->
                 <span class="gen-sect">
@@ -67,28 +67,28 @@
                         <h3>Default Video</h3>
                         <p>If the video link is broken, this video would play instead automatically</p>
                     </span>
-                    <input type="text" class="light" placeholder="Enter default video link" id="def-video" name="def-video">
+                    <input type="text" class="light" placeholder="Enter default video link"  value="<%=settings.default_video%>" id="def-video" name="def-video">
                 </span>
                 <span class="gen-sect">
                     <span>
                         <h3>Default Banner</h3>
                         <p>The Default poster image to show in player</p>
                     </span>
-                    <input type="text" class="light" placeholder="Enter default banner link" id="def-banner" name="def-banner">
+                    <input type="text" class="light" placeholder="Enter default banner link"  value="<%=settings.default_banner%>" id="def-banner" name="def-banner">
                 </span>
                 <span class="gen-sect">
                     <span>
                         <h3>Ice Server</h3>
                         <p>Add a list of Ice servers to use for peer-to-peer in the video</p>
                     </span>
-                    <input type="text" class="light" placeholder="Enter p2p servers seperated by ','" id="ice-server" name="ice-server">
+                    <input type="text" class="light" placeholder="Enter p2p servers seperated by ','"  value="<%=settings.stun_servers%>" id="ice-server" name="ice-server">
                 </span>
                 <span class="gen-sect">
                     <span>
                         <h3>P2P Tracker Server</h3>
                         <p>Add a list of Tracker Servers to use for peer-to-peer in the video</p>
                     </span>
-                    <input type="text" class="light" placeholder="Enter p2p tracker server seperated by ','" id="tracker-server" name="tracker-server">
+                    <input type="text" class="light" placeholder="Enter p2p tracker server seperated by ','"  value="<%=settings.tracker_servers%>" id="tracker-server" name="tracker-server">
                 </span>
             </div>
         </div>

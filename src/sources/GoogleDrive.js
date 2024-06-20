@@ -1,6 +1,7 @@
 const googleApis = require('googleapis')
 const axios = require('axios')
 const env = require('dotenv').config()
+const fs = require('fs')
 
 const email = "";
 const clientId = "";
@@ -34,6 +35,22 @@ const getFileData = async (id) =>{
 }
 
 /**
+ * 
+ * @param {string} fileId 
+ */
+const downloadFile = (fileId) =>{
+    let destination = fs.createWriteStream('../upload')
+    let fileData = drive.files.get({fileId:id,alt:"media"},{responseType:'stream'},(err,res)=>{
+        res.data.on('end',()=>{
+            console.log("done")
+        }).on('error',(err)=>{
+            console.log(err)
+        }).pipe(destination)
+    })
+    return fileData
+}
+
+/**
  * gets the source of the 
  */
 const getSource = async (url,id) =>{
@@ -41,4 +58,8 @@ const getSource = async (url,id) =>{
         method: 'get',
         url: ''
     })
+}
+
+module.exports = {
+    getSource,downloadFile,getFileData,generateGoogleAuthUrl
 }

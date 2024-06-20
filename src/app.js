@@ -14,6 +14,12 @@ expressApp.use(express.static(path.join(__dirname,'template')))
 expressApp.use(express.static(path.join(__dirname,'utils')))
 expressApp.use(express.static(path.join(__dirname,'uploads')))
 
+const apiRoutes = require('./routes/Apiroutes');
+expressApp.use('/api',apiRoutes);
+
+const clientRoutes = require('./routes/clientRoutes')
+expressApp.use('/',clientRoutes)
+
 const PORT = 3000
 
 expressApp.listen(PORT,()=>{

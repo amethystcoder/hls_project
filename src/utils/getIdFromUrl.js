@@ -8,7 +8,8 @@
 function getIdFromUrl(url,linkSourceType) {
     switch (linkSourceType) {
         case "GoogleDrive":
-            return url.split("=")[1];
+            let splitUrl = url.split("/")
+            return splitUrl[splitUrl.length - 2];
         case "OkRu":
             return url.split("=")[1];
         case "Yandex":

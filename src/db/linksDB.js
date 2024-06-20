@@ -27,23 +27,27 @@ let get = async (restOfQuery = '')=>{
     return result;
 }
 
-let deletion = (restOfQuery = '')=>{
+let deletion = async (restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`DELETE FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
-let update = (set,restOfQuery = '')=>{
+let update = async (set = '',restOfQuery = '')=>{
     let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
-    let result;
-    dbInstance.query(`UPDATE ${table} ${set}  ${where} ${restOfQuery}`,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let [result] = await dbInstance.query(`UPDATE ${table} ${where} ${restOfQuery}`)
+    return result;
+}
+
+/**
+ * gets a distinct column from the table
+ * @param {string} name the name of the column
+ * @param {string} restOfQuery are the other conditions in the query to look for 
+ */
+let getDistinct = async (name,restOfQuery = '')=>{
+    name = name ? name : "*"
+    let where = restOfQuery && restOfQuery != '' ? 'WHERE' : ''
+    let [result] = await dbInstance.query(`SELECT ${name} FROM ${table} ${where} ${restOfQuery}`)
     return result;
 }
 
@@ -51,9 +55,9 @@ let update = (set,restOfQuery = '')=>{
  * gets all available links
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getAllLinks = (number=false)=>{
-    if (number) return getCount()
-    return get()
+let getAllLinks = async (number=false)=>{
+    if (number) return await getCount()
+    return await get()
 }
 
 //
@@ -61,9 +65,9 @@ let getAllLinks = (number=false)=>{
  * gets all active links
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getActiveLinks = (number=false)=>{
-    if (number) return getCount("status = 'active'")
-    return get("status = 'active'")
+let getActiveLinks = async (number=false)=>{
+    if (number) return await getCount("status = 'active'")
+    return await get("status = 'active'")
 }
 
 //
@@ -71,35 +75,41 @@ let getActiveLinks = (number=false)=>{
  * gets all broken links
  * @argument {boolean} number determines whether to just send the number of items in storage 
  */
-let getBrokenLinks = (number=false)=>{
-    if (number) return getCount("status = 'broken'")
-    return get("status = 'broken'")
+let getBrokenLinks = async (number=false)=>{
+    if (number) return await getCount("status = 'broken'")
+    return await get("status = 'broken'")
+}
+
+/**
+ * gets all broken links
+ * @argument {boolean} number determines whether to just send the number of items in storage 
+ */
+let getPausedLinks = async (number=false)=>{
+    if (number) return await getCount("status = 'broken'")
+    return await get("status = 'paused'")
 }
 
 /**
  * @argument {string} id
  */
-let getLinkUsingId = (linkId)=>{
-    return get(`id = ${dbInstance.escape(linkId)}`)
+let getLinkUsingId = async (linkId)=>{
+    return await get(`id = ${dbInstance.escape(linkId)}`)
 }
 
 /**
  * create a new link in the database
  * @argument {Object} linkData object containing link data to be stored... properties include
- * id,acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug
+ * acc_id,title,main_link,alt_link,preview_img,data,type,subtitles,views,downloads,is_alt,slug
  */
-let createNewLink = (linkData)=>{
-    let result;
+let createNewLink = async (linkData)=>{
     if (typeof linkData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
     linkData.status = "active"
     linkData.updated_at = new Date().toUTCString()
     linkData.created_at = new Date().toUTCString()
     linkData.deleted = false
-    dbInstance.query(`INSERT INTO ${table}`, linkData,(error,results,fields)=>{
-        if (error) throw error
-        result = results;
-    })
+    let result = await dbInstance.query(`INSERT INTO ${table} (acc_id,title,main_link,alt_link,preview_img,type,subtitles,status,updated_at,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)`, 
+    [linkData.acc_id,linkData.title,linkData.main_link,linkData.alt_link,linkData.preview_img,linkData.type,linkData.subtitles,linkData.status,linkData.updated_at,linkData.created_at])
     return result;
 }
 
@@ -109,7 +119,7 @@ let createNewLink = (linkData)=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let updateUsingId = (id,column,value)=>{
+let updateUsingId = async (id,column,value)=>{
     let updateColumnBlacklists = ["id","acc_id","created_at","updated_at","slug"];//coulumns that cannot be updated
     let queryConditional = `id = '${id}'`
     let set = 'SET '
@@ -120,12 +130,12 @@ let updateUsingId = (id,column,value)=>{
             }
         }
         set = set.substring(0,set.length - 1)
-        return update(set,queryConditional)
+        return await update(set,queryConditional)
     }
     if (typeof column == 'string' && typeof value == 'string'){
         if (!updateColumnBlacklists.includes(column)) {
             set += `${column} = '${value}'`;
-            return update(set,queryConditional)   
+            return await update(set,queryConditional)   
         }
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
@@ -134,16 +144,16 @@ let updateUsingId = (id,column,value)=>{
 /**
  * deletes a link using its ID
  */
-let deleteUsingId = (id)=>{
-    return deletion(`id = '${id}'`);
+let deleteUsingId = async (id)=>{
+    return await deletion(`id = '${id}'`);
 }
 
 
 /**
  * deletes all broken links
  */
-let deleteBrokenLinks = ()=>{
-    return deletion('status = "broken"')
+let deleteBrokenLinks = async ()=>{
+    return await deletion('status = "broken"')
 }
 
 /**
@@ -152,23 +162,24 @@ let deleteBrokenLinks = ()=>{
  * an array, same for when it is a string 
  * @argument {Array | string} value type and size must always correlate with `column` argument 
  */
-let customDelete = (column,value)=>{
+let customDelete = async (column,value)=>{
     let queryConditions = ""
     if (Array.isArray(column) && Array.isArray(value)) {
         queryConditions = `'${column[0]}' = '${value[0]}'`;
         for (let index = 1; index < column.length; index++) {
             queryConditions += `AND ${column[index]} = '${value[index]}'`;
         }
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     if (typeof column == 'string' && typeof value == 'string') {
         queryConditions = `${column} = '${value}'`;
-        return deletion(queryConditions)
+        return await deletion(queryConditions)
     }
     throw TypeError("arguments are not of the right type "+ typeof column + typeof value)
 }
 
 module.exports = {
+    getDistinct,
     getActiveLinks,
     getAllLinks,
     getLinkUsingId,
@@ -177,5 +188,6 @@ module.exports = {
     deleteBrokenLinks,
     deleteUsingId,
     customDelete,
-    getBrokenLinks
+    getBrokenLinks,
+    getPausedLinks
 }

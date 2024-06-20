@@ -6,41 +6,34 @@ const DBPool = require('./dbConfig')
 const initializeDatabase = async ()=>{
     try {
         //create tables
-        fs.readFile('./db.sql',(err,data)=>{
+        fs.readFile('./db.sql',async (err,data)=>{
             if(err) return err
             let file = data.toString('utf-8')
             let SQLcommand = ''
             for (let index = 0; index < file.length; index++) {
                 SQLcommand += file[index];
                 if (file[index] === ";") {
-                    SQLcommand += 
-                    DBPool.query(SQLcommand,(error,results,fields)=>{
-                        if (error) throw error
-                        console.log(results) 
-                    })
+                    await DBPool.query(SQLcommand)
                     SQLcommand = ''
                 }
             }  
         })
         //create default values for config
-        fs.readFile('./def_values.sql',(err,data)=>{
+        fs.readFile('./def_values.sql',async (err,data)=>{
             if(err) return err
             let file = data.toString('utf-8')
             let SQLcommand = ''
             for (let index = 0; index < file.length; index++) {
                 SQLcommand += file[index];
                 if (file[index] === ";") {
-                    SQLcommand += 
-                    DBPool.query(SQLcommand,(error,results,fields)=>{
-                        if (error) throw error
-                        console.log(results) 
-                    })
+                    await DBPool.query(SQLcommand)
                     SQLcommand = ''
                 }
             }  
         })
+        return {success:true}
     } catch (error) {
-        console.log(error)
+        return error
     }
 }
 

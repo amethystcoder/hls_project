@@ -10,16 +10,17 @@
         function login(){
             const username = document.getElementById("username").value
             const password = document.getElementById("password").value
-            let formdata = new FormData()
-            formdata.append("username",username)
-            formdata.append("password",password)
-            fetch("http://localhost:3000/api/login",{//change later
+            fetch("../api/login",{//change later
+                headers:{
+                    "Content-Type":"application/json"
+                },
                 method:'POST',
-                body:formdata,
+                body:JSON.stringify({username,password}),
             }).then(Response => Response.json())
             .then(data=>{
-
+                console.log(data)
             })
+            .catch(error=>{})
         }
     </script>
 </head>
