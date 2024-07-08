@@ -108,8 +108,8 @@ let createNewLink = async (linkData)=>{
     linkData.updated_at = new Date().toUTCString()
     linkData.created_at = new Date().toUTCString()
     linkData.deleted = false
-    let result = await dbInstance.query(`INSERT INTO ${table} (acc_id,title,main_link,alt_link,preview_img,type,subtitles,status,updated_at,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)`, 
-    [linkData.acc_id,linkData.title,linkData.main_link,linkData.alt_link,linkData.preview_img,linkData.type,linkData.subtitles,linkData.status,linkData.updated_at,linkData.created_at])
+    let result = await dbInstance.query(`INSERT INTO ${table} (acc_id,title,main_link,alt_link,preview_img,type,slug,subtitles,status,updated_at,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)`, 
+    [linkData.acc_id,linkData.title,linkData.main_link,linkData.alt_link,linkData.preview_img,linkData.type,linkData.slug,linkData.subtitles,linkData.status,linkData.updated_at,linkData.created_at])
     return result;
 }
 

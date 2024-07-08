@@ -4,13 +4,23 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../static/common_styles.css">
-        <link rel="stylesheet" href="../linkCU.css">
+        <link rel="stylesheet" href="./linkCU.css">
         <title></title>
         <script>
             window.addEventListener("load",(ev)=>{
                 
             })
         </script>
+        <style>
+            .round{
+                padding: 3px;
+                border: hidden;
+                border-radius: 50%;
+                display: flex;
+                width: 5px;
+                height: 5px;
+            }
+        </style>
     </head>
     <body>
         <div class="side-div">
@@ -18,7 +28,7 @@
         </div>
         <main>
             <%- include('./sections/header')%>
-            <div>
+            <div class="bar tab">
                 <a href="./all">
                     <button>All</button>
                 </a>
@@ -56,8 +66,20 @@
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>
                                     <td><%= link.views %></td>
-                                    <td><span class="round" 
-                                        style="background-color: <%= link.status %>;"></span></td>
+                                    <td>
+                                        <% if(link.status == "green"){ %>
+                                            <span class="round" 
+                                            style="background-color: green;"></span>
+                                        <% } %>
+                                        <% if(link.status == "red"){ %>
+                                            <span class="round" 
+                                            style="background-color: red;"></span>
+                                        <% } %>
+                                        <% if(link.status == "darkgray"){ %>
+                                            <span class="round" 
+                                            style="background-color: rgb(66, 64, 64);"></span>
+                                        <% } %>
+                                    </td>
                                     <td><%= link.updated_at %></td>
                                     <td class="bar">
                                         <a href="<%= link.main_link %>"><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,8 +124,20 @@
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>
                                     <td><%= link.views %></td>
-                                    <td><span class="round" 
-                                        style="background-color: <%= link.status %>;"></span></td>
+                                    <td>
+                                    <% if(link.status == "green"){ %>
+                                        <span class="round" 
+                                        style="background-color: green;"></span>
+                                    <% } %>
+                                    <% if(link.status == "red"){ %>
+                                        <span class="round" 
+                                        style="background-color: red;"></span>
+                                    <% } %>
+                                    <% if(link.status == "darkgray"){ %>
+                                        <span class="round" 
+                                        style="background-color: rgb(66, 64, 64);"></span>
+                                    <% } %>
+                                </td>
                                     <td><%= link.updated_at %></td>
                                     <td class="bar">
                                         <a href="<%= link.main_link %>"><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -148,8 +182,19 @@
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>
                                     <td><%= link.views %></td>
-                                    <td><span class="round" 
-                                        style="background-color: <%= link.status %>;"></span></td>
+                                    <td><% if(link.status == "green"){ %>
+                                        <span class="round" 
+                                        style="background-color: green;"></span>
+                                    <% } %>
+                                    <% if(link.status == "red"){ %>
+                                        <span class="round" 
+                                        style="background-color: red;"></span>
+                                    <% } %>
+                                    <% if(link.status == "darkgray"){ %>
+                                        <span class="round" 
+                                        style="background-color: rgb(66, 64, 64);"></span>
+                                    <% } %>
+                                </td>
                                     <td><%= link.updated_at %></td>
                                     <td class="bar">
                                         <a href="<%= link.main_link %>"><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -194,8 +239,19 @@
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>
                                     <td><%= link.views %></td>
-                                    <td><span class="round" 
-                                        style="background-color: <%= link.status %>;"></span></td>
+                                    <td><% if(link.status == "green"){ %>
+                                        <span class="round" 
+                                        style="background-color: green;"></span>
+                                    <% } %>
+                                    <% if(link.status == "red"){ %>
+                                        <span class="round" 
+                                        style="background-color: red;"></span>
+                                    <% } %>
+                                    <% if(link.status == "darkgray"){ %>
+                                        <span class="round" 
+                                        style="background-color: rgb(66, 64, 64);"></span>
+                                    <% } %>
+                                </td>
                                     <td><%= link.updated_at %></td>
                                     <td class="bar">
                                         <a href="<%= link.main_link %>"><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

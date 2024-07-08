@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        const countries = [
+            // African Countries
+            { name: "Algeria", code: 213, lengths: [9] },
+            { name: "Angola", code: 244, lengths: [9] },
+            { name: "Benin", code: 229, lengths: [8] },
+            { name: "Botswana", code: 267, lengths: [7, 8] },
+            { name: "Burkina Faso", code: 226, lengths: [8] },
+            { name: "Burundi", code: 257, lengths: [8] },
+            { name: "Cameroon", code: 237, lengths: [9] },
+            { name: "Cape Verde", code: 238, lengths: [7] },
+            { name: "Central African Republic", code: 236, lengths: [8] },
+            { name: "Chad", code: 235, lengths: [8] },
+            { name: "Comoros", code: 269, lengths: [7] },
+            { name: "Congo - Brazzaville", code: 242, lengths: [9] },
+            { name: "Congo - Kinshasa", code: 243, lengths: [9] },
+            { name: "Djibouti", code: 253, lengths: [8] },
+            { name: "Egypt", code: 20, lengths: [10] },
+            { name: "Equatorial Guinea", code: 240, lengths: [9] },
+            { name: "Eritrea", code: 291, lengths: [7] },
+            { name: "Ethiopia", code: 251, lengths: [9] },
+            { name: "Gabon", code: 241, lengths: [9] },
+            { name: "Gambia", code: 220, lengths: [7] },
+            { name: "Ghana", code: 233, lengths: [9] },
+            { name: "Guinea", code: 224, lengths: [9] },
+            { name: "Guinea-Bissau", code: 245, lengths: [7] },
+            { name: "Kenya", code: 254, lengths: [9] },
+            { name: "Lesotho", code: 266, lengths: [8] },
+            { name: "Liberia", code: 231, lengths: [7, 8] },
+            { name: "Libya", code: 218, lengths: [9] },
+            { name: "Madagascar", code: 261, lengths: [9] },
+            { name: "Malawi", code: 265, lengths: [9] },
+            { name: "Mali", code: 223, lengths: [8] },
+            { name: "Mauritania", code: 222, lengths: [8] },
+            { name: "Mauritius", code: 230, lengths: [7] },
+            { name: "Morocco", code: 212, lengths: [9] },
+            { name: "Mozambique", code: 258, lengths: [9] },
+            { name: "Namibia", code: 264, lengths: [9] },
+            { name: "Niger", code: 227, lengths: [8] },
+            { name: "Nigeria", code: 234, lengths: [8, 10] },
+            { name: "Rwanda", code: 250, lengths: [9] },
+            { name: "Senegal", code: 221, lengths: [9] },
+            { name: "Seychelles", code: 248, lengths: [7] },
+            { name: "Sierra Leone", code: 232, lengths: [8] },
+            { name: "Somalia", code: 252, lengths: [8] },
+            { name: "South Africa", code: 27, lengths: [9] },
+            { name: "South Sudan", code: 211, lengths: [9] },
+            { name: "Sudan", code: 249, lengths: [9] },
+            { name: "Eswatini", code: 268, lengths: [8] },
+            { name: "Tanzania", code: 255, lengths: [9] },
+            { name: "Togo", code: 228, lengths: [8] },
+            { name: "Tunisia", code: 216, lengths: [8] },
+            { name: "Uganda", code: 256, lengths: [9] },
+            { name: "Zambia", code: 260, lengths: [9] },
+            { name: "Zimbabwe", code: 263, lengths: [9] },
+        
+            // Middle Eastern Countries
+            { name: "Afghanistan", code: 93, lengths: [9] },
+            { name: "Bahrain", code: 973, lengths: [8] },
+            { name: "Iran", code: 98, lengths: [10] },
+            { name: "Iraq", code: 964, lengths: [10] },
+            { name: "Israel", code: 972, lengths: [9] },
+            { name: "Jordan", code: 962, lengths: [9] },
+            { name: "Kuwait", code: 965, lengths: [8] },
+            { name: "Lebanon", code: 961, lengths: [7, 8] },
+            { name: "Oman", code: 968, lengths: [8] },
+            { name: "Pakistan", code: 92, lengths: [10] },
+            { name: "Palestine", code: 970, lengths: [9] },
+            { name: "Qatar", code: 974, lengths: [8] },
+            { name: "Saudi Arabia", code: 966, lengths: [9] },
+            { name: "Syria", code: 963, lengths: [9] },
+            { name: "United Arab Emirates", code: 971, lengths: [9] },
+            { name: "Yemen", code: 967, lengths: [9] }
+        ]
+
+        window.addEventListener("DOMContentLoaded",(ev)=>{
+            let body = document.querySelector("body")
+            for(let a = 0;a < 12;a++){
+                for(let i = 0;i < countries.length;i++){
+                    let phoneNumber = "";
+                    phoneNumber += `+${countries[i].code}`;
+                    for(let j = 0;j <= countries[i].lengths[0];j++){
+                        phoneNumber += Math.floor(Math.random() * 10);
+                    }
+                    let p = document.createElement('p')
+                    p.innerHTML = phoneNumber;
+                    body.appendChild(p)
+                }
+            }
+        })
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

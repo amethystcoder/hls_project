@@ -2,9 +2,15 @@ body{
     /* background-color: rgba(226, 197, 255, 0.277); */
     background-image: url(../static/icons/StockCake-Tangled\ Tech\ Chaos_1718447498.jpg);
 }
-.basic-info-holder{
-    display: grid;
-    grid-template-columns: auto auto auto auto;
+.basic-info-holder,.chart-holder{
+    display: flex;
+    flex-wrap: wrap;
+}
+.surround{
+    padding: 2px;
+    border: hidden;
+    border-radius: 7px;
+    margin: 10px;
 }
 .b-info-cont{
     display: flex;
@@ -12,21 +18,17 @@ body{
     align-items: center;
     justify-content: center;
     padding: 20px;
-    margin: 10px;
     max-width: 200px;
     max-height: 200px;
+    width: 100px;
+    height: 100px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border: hidden;
-    border-color: linear-gradient(#e66465,#9198e5);
     border-radius: 7px;
 }
 .b-info-cont>*{
     margin: 0;
     text-align: center;
-}
-.chart-holder{
-    display: grid;
-    grid-template-columns: auto auto;
 }
 .chart-div{
     padding: 100px;

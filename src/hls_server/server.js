@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const Session = require('express-session')
 require('dotenv').config()
 //We need to also add rate limiting to this app
 
@@ -11,6 +12,12 @@ require('dotenv').config()
     }
     //we need to get a way to know if there is a new configuration
 }) */
+
+app.use(Session({
+    resave:false,
+    secret:"mySecr",
+    saveUninitialized:false //store in .env
+}))
 
 app.use(express.json())
 

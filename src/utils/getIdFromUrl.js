@@ -20,3 +20,7 @@ function getIdFromUrl(url,linkSourceType) {
             return '';
     }
 }
+
+
+
+module.exports = getIdFromUrl

@@ -15,8 +15,6 @@ let drive = googleApis.google.drive({
     auth:OauthClient
 })
 
-drive.files
-
 const generateGoogleAuthUrl = ()=>{
     return OauthClient.generateAuthUrl({
         scope:["https://googleapis.com/auth/drive"],
@@ -38,16 +36,38 @@ const getFileData = async (id) =>{
  * 
  * @param {string} fileId 
  */
-const downloadFile = (fileId) =>{
+const downloadFile = async (fileId) =>{
     let destination = fs.createWriteStream('../upload')
-    let fileData = drive.files.get({fileId:id,alt:"media"},{responseType:'stream'},(err,res)=>{
-        res.data.on('end',()=>{
-            console.log("done")
-        }).on('error',(err)=>{
-            console.log(err)
-        }).pipe(destination)
+    return new Promise((resolve,reject)=>{
+        drive.files.get({fileId:id,alt:"media"},{responseType:'stream'},(err,res)=>{
+            res.data.on('end',()=>{
+                console.log("done")
+                resolve(res)
+            }).on('error',(err)=>{
+                console.log(err)
+                reject(err)
+            }).pipe(destination)
+        })
     })
-    return fileData
+}
+
+/**
+ * 
+ * @param {string} fileId 
+ */
+const downloadStreamFile = async (fileId,res) =>{
+    //let destination = fs.createWriteStream('../upload')
+    return new Promise((resolve,reject)=>{
+        drive.files.get({fileId:id,alt:"media"},{responseType:'stream'},(err,response)=>{
+            response.data.on('end',()=>{
+                console.log("done")
+                resolve(response)
+            }).on('error',(err)=>{
+                console.log(err)
+                reject(err)
+            }).pipe(res)
+        })
+    })
 }
 
 /**
@@ -61,5 +81,5 @@ const getSource = async (url,id) =>{
 }
 
 module.exports = {
-    getSource,downloadFile,getFileData,generateGoogleAuthUrl
+    getSource,downloadFile,getFileData,generateGoogleAuthUrl,downloadStreamFile
 }

@@ -1,6 +1,8 @@
 const fs = require('fs')
 const fsPromises = fs.promises
 const path = require('path')
+const sources = require("../sources/sources")
+const getIdFromUrl = require("../utils/getIdFromUrl")
 
 const streamVideoFile = (fileId,type,start)=>{
     //parse the start argument if not done already
@@ -45,6 +47,13 @@ const getHlsDataFile = async (id,part = false)=>{
     
 }
 
+const getStream = (type,link) => {
+    if (type == "") getIdFromUrl(link,type)
+    sources.Direct.downloadStream()
+    sources.GoogleDrive.downloadStreamFile()
+    sources.Yandex.downloadStreamVid()
+}
+
 module.exports = {
-    streamVideoFile,getHlsDataFile
+    streamVideoFile,getHlsDataFile,getStream
 }

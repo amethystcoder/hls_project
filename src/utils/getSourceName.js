@@ -18,10 +18,13 @@ function getSource(link) {
             case "disk.yandex.com":
                 return "Yandex";
             break;
+            case "yadi.sk":
+                return "Yandex";
+            break;
             case "app.box.com":
                 return "BOX"
             default:
-                return '';
+                return 'Direct';
         }
     }
     return ''

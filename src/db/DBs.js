@@ -8,6 +8,7 @@ let p2pStatsDB = require("./p2pStatsDB")
 let serversDB = require("./serversDB")
 let settingsDB = require("./settingsDB")
 let usersDB = require("./usersDB")
+let proxyStore = require("./proxies")
 
 module.exports = {
     adsDB,
@@ -19,5 +20,6 @@ module.exports = {
     p2pStatsDB,
     serversDB,
     settingsDB,
-    usersDB
+    usersDB,
+    proxyStore
 }
