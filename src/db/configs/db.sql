@@ -26,7 +26,9 @@ CREATE TABLE `ads` (
   `id` int(5) NOT NULL,
   `title` varchar(255) NOT NULL,
   `type` varchar(25) DEFAULT NULL,
-  `code` text DEFAULT NULL
+  `code` text DEFAULT NULL,
+  `xml_file` varchar(255) NOT NULL,
+  `start_offset` bigint(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -119,7 +121,7 @@ CREATE TABLE `links` (
   `downloads` int(25) DEFAULT 0,
   `is_alt` tinyint(4) DEFAULT 0,
   `slug` varchar(255) NOT NULL,
-  `status` tinyint(4) DEFAULT 'active',
+  `status` varchar(255) DEFAULT 'active',
   `updated_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `deleted` tinyint(4) DEFAULT 0
@@ -191,6 +193,52 @@ CREATE TABLE `p2p_stats` (
 --
 -- Indexes for dumped tables
 --
+
+INSERT INTO `ads` (`id`, `title`, `type`, `code`) VALUES
+(20, 'popad', 'popad', '');
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`config`, `var`) VALUES
+('version', '2.2'),
+('proxyUser', ''),
+('proxyPass', ''),
+('timezone', 'Asia/Colombo'),
+('dark_theme', '0'),
+('adminId', '1'),
+('sublist', '[\"sinhala\",\"english\",\"hindi\",\"french\",\"korean\"]'),
+('logo', 'gdplyr-logo.png'),
+('favicon', 'favicon.ico'),
+('player', 'jwplayer'),
+('playerSlug', 'v'),
+('showServers', '1'),
+('adminId', '29'),
+('default_video', 'http://localhost/gdplyr/uploads/no-video.mp4'),
+('default_banner', 'http://localhost/gdplyr/uploads/default-banner.jpg'),
+('stun_servers', 'stun:stun.l.google.com:19302,stun:global.stun.twilio.com:3478?transport=udp'),
+('tracker_servers', 'wss://personal.tracker1.com,wss://personal.tracker2.com'),
+('last_backup', '2021-01-17 18:53:08'),
+('jw_license', 'https://content.jwplatform.com/libraries/Jq6HIbgz.js'),
+('isAdblocker', '1'),
+('v_preloader', '1'),
+('driveAccounts', '[]'),
+('driveUploadChunk', '1'),
+('isAutoBackup', '0'),
+('disabledQualities', '[\"1080\"]'),
+('isAutoEnableSub', '1'),
+('autoPlay', '0'),
+('streamRand', '1'),
+('altR', '{\"onedrive\":{\"n\":\"\"},\"okru\":{\"n\":\"\"},\"gphoto\":{\"n\":\"\"},\"direct\":{\"n\":\"\"}}'),
+('isActivated', '1');
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `img`, `role`, `status`) VALUES
+(29, 'admin', '$2y$10$zh4Jfuol7MOelfOWwoOUtu.3D/vfr1ROZdonfcblW2Sl7pC3.Gd0m', 'profile-img-codyseller.jpg', 'admin', 0);
 
 --
 -- Indexes for table `ads`
@@ -320,7 +368,3 @@ ALTER TABLE `hls_links`
   ADD CONSTRAINT `hls_links_ibfk_1` FOREIGN KEY (`link_id`) REFERENCES `links` (`id`),
   ADD CONSTRAINT `hls_links_ibfk_2` FOREIGN KEY (`server_id`) REFERENCES `servers` (`id`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

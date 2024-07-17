@@ -7,6 +7,7 @@ const expressapp = require('express')
 const router = expressapp.Router({mergeParams:true,strict:false,caseSensitive:true})
 const DBs = require('../db/DBs')
 const parseSourceAndStatus = require('../utils/sourceStatusParser')
+const initializeDB = require('../db/configs/initializeDB')
 
 router.get('/',(req,res)=>{
     try {
@@ -20,6 +21,16 @@ router.get('/',(req,res)=>{
         res.render('../template/error',{
             error
         })
+    }
+})
+
+router.get("/initialize",async (req,res)=>{
+    try {
+        const newDb = await initializeDB();
+        console.log(newDb)
+        res.status(202).send('Database created successfully')
+    } catch (error) {
+        res.json({error})
     }
 })
 
@@ -224,10 +235,13 @@ router.get('/servers',async (req,res)=>{
     }
 })
 
-router.get('/ads',(req,res)=>{
+router.get('/ads', async (req,res)=>{
     try {
         if (req.session.username) {
-            res.render('../template/ads')
+            let ads = await DBs.adsDB.getAllads();
+            res.render('../template/ads',{
+                ads
+            })
         } else{
             res.redirect('./login')
         }

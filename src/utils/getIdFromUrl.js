@@ -11,11 +11,11 @@ function getIdFromUrl(url,linkSourceType) {
             let splitUrl = url.split("/")
             return splitUrl[splitUrl.length - 2];
         case "OkRu":
-            return url.split("=")[1];
+            return url.split("=")[splitUrl.length - 1];
         case "Yandex":
-            return url.split("=")[1];
+            return url.split("=")[splitUrl.length - 1];
         case "BOX":
-            return url.split("=")[1];
+            return url.split("=")[splitUrl.length - 1];
         default:
             return '';
     }

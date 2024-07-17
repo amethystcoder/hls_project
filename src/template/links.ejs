@@ -10,6 +10,13 @@
             window.addEventListener("load",(ev)=>{
                 
             })
+            function toggleSelectAll(){
+                let checkAll = document.getElementById("check-all")
+                let checks = document.querySelectorAll(".checkBoxes")
+                for (let index = 0; index < checks.length; index++) {
+                    checks[index].checked = checkAll.checked
+                }
+            }
         </script>
         <style>
             .round{
@@ -48,7 +55,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <td><input type="checkbox" name="" id=""></td>
+                                <td><input type="checkbox" name="" id="check-all" onchange="toggleSelectAll()"></td>
                                 <td>ID</td>
                                 <td>Title</td>
                                 <td>Source</td>
@@ -61,7 +68,7 @@
                         <tbody>
                             <% linkData.forEach((link)=>{ %>
                                 <tr>
-                                    <td><input type="checkbox" name="" id=""></td>
+                                    <td><input type="checkbox" name="" id="" class="checkBoxes"></td>
                                     <td><%= link.id %></td>
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>
@@ -106,7 +113,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <td><input type="checkbox" name="" id=""></td>
+                                <td><input type="checkbox" name="" id="check-all" onchange="toggleSelectAll()"></td>
                                 <td>ID</td>
                                 <td>Title</td>
                                 <td>Source</td>
@@ -119,7 +126,7 @@
                         <tbody>
                             <% linkData.forEach((link)=>{ %>
                                 <tr>
-                                    <td><input type="checkbox" name="" id=""></td>
+                                    <td><input type="checkbox" name="" id="" class="checkBoxes"></td>
                                     <td><%= link.id %></td>
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>
@@ -164,7 +171,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <td><input type="checkbox" name="" id=""></td>
+                                <td><input type="checkbox" name="" id="check-all" onchange="toggleSelectAll()"></td>
                                 <td>ID</td>
                                 <td>Title</td>
                                 <td>Source</td>
@@ -177,7 +184,7 @@
                         <tbody>
                             <% linkData.forEach((link)=>{ %>
                                 <tr>
-                                    <td><input type="checkbox" name="" id=""></td>
+                                    <td><input type="checkbox" name="" id="" class="checkBoxes"></td>
                                     <td><%= link.id %></td>
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>
@@ -221,7 +228,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <td><input type="checkbox" name="" id=""></td>
+                                <td><input type="checkbox" name="" id="check-all" onchange="toggleSelectAll()"></td>
                                 <td>ID</td>
                                 <td>Title</td>
                                 <td>Source</td>
@@ -234,7 +241,7 @@
                         <tbody>
                             <% linkData.forEach((link)=>{ %>
                                 <tr>
-                                    <td><input type="checkbox" name="" id=""></td>
+                                    <td><input type="checkbox" name="" id="" class="checkBoxes"></td>
                                     <td><%= link.id %></td>
                                     <td><%= link.title %></td>
                                     <td><%= link.source %></td>

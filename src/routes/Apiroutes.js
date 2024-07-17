@@ -41,13 +41,13 @@ router.post("/link/create",upload.fields([
     try {
         if (req.session.username) {
             const {title,main_link,alt_link} = req.body
-            const subtitles = req.files.subtitles ? req.files.subtitles : ""
-            const preview_img = req.files.preview_img ? req.files.preview_img : ""
+            const subtitles = req.files.subtitles ? req.files.subtitles[0].path : ""
+            const preview_img = req.files.preview_img ? req.files.preview_img[0].path : ""
             //Write code to save files to upload folder and to also take care of the undefined error problem
             let linkSource = getSourceName(main_link)
             let type = linkSource
             let slug = generateUniqueId(50)
-            let data = {title,main_link,alt_link,subtitles:subtitles[0].path,preview_img:preview_img[0].path,type,slug}
+            let data = {title,main_link,alt_link,subtitles:subtitles,preview_img:preview_img,type,slug}
             if (!linkSource || linkSource == '') throw EvalError("Incorrect link provided. Check that the link is either a GDrive, Yandex, Box, OkRu or Direct link")
             let newLinkCreate = await DB.linksDB.createNewLink(data)
             res.status(201).json({success:true,message:newLinkCreate})
@@ -61,7 +61,7 @@ router.post("/link/create",upload.fields([
 
 router.post("/login", async (req,res)=>{
     try {
-        const username = req.body.username
+        const username = req.body.username.toLowerCase()
         const password = req.body.password
         let loggedIn = false
         let userExists = false
@@ -80,6 +80,15 @@ router.post("/login", async (req,res)=>{
             }
         }
         res.json({success:true,userExists:userExists,loggedIn:loggedIn})
+    } catch (error) {
+        res.json({error})
+    }
+})
+
+router.get("/logout",async (req,res)=>{
+    try {
+        req.session.destroy()
+        res.status(200).send("successfully logged out")
     } catch (error) {
         res.json({error})
     }
@@ -241,11 +250,25 @@ router.put("/ads/edit/:id",async (req,res)=>{
     }
 })
 
+router.delete("/ads/:id",async (req,res)=>{
+    try {
+        if (req.session.username) {
+            const id = req.params.id
+            let deleteAd = await DB.adsDB.deleteUsingId(id);
+            res.status(201).send({message:"successful"})
+        } else {
+            res.status(401).send({success:false,message:"unauthorized"})
+        }
+    } catch (error) {
+        res.json({error})
+    }
+})
+
 router.post("/vast_ads/create",async (req,res)=>{
     try {
         if (req.session.username) {
-            /* const {title,type} = req.body
-            DB.adsDB.createNewAd({title,type}) */
+            const {title,type,xml_file,start_offset} = req.body
+            DB.adsDB.createNewAd({title,type,xml_file,start_offset})
         } else {
             res.status(401).send({success:false,message:"unauthorized"})
         }

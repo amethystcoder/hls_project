@@ -103,12 +103,10 @@ let createNewAltLink = async (alt_linkData)=>{
     
     if (typeof alt_linkData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    alt_linkData.updated_at = new Date().toUTCString()
-    alt_linkData.created_at = new Date().toUTCString()
     alt_linkData.status = true
     let result = await dbInstance.query(`INSERT INTO ${table} (parent_id,link,type,updated_at,created_at) VALUES (?,?,?,?,?,?)`, 
     [alt_linkData.parent_id,alt_linkData.link,alt_linkData.type,
-        alt_linkData.status,alt_linkData.updated_at,alt_linkData.created_at])
+        alt_linkData.status,new Date().toUTCString(),new Date().toUTCString()])
     return result;
 }
 

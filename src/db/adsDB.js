@@ -96,7 +96,7 @@ let getadUsingId = async (adsId)=>{
 let createNewAd = async (adsData)=>{
     if (typeof adsData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    let result = await dbInstance.query(`INSERT INTO ${table} (title,type,code) VALUES (?,?,?)`, [adsData.title,adsData.type,adsData.code])
+    let result = await dbInstance.query(`INSERT INTO ${table} (title,type,xml_file,start_offset) VALUES (?,?,?,?)`, [adsData.title,adsData.type,adsData.xml_file,adsData.start_offset])
     return result;
 }
 

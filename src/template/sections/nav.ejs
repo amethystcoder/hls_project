@@ -97,19 +97,19 @@
     }
     @keyframes navOpen {
         from{
-            height: 0;
+            transform: scaleY(0);
         }
         to{
-            height: max-content;
+            transform: scaleY(100%);
             display: block;
         }
     }
     @keyframes navClose {
         from{
-            height: max-content;
+            transform: scaleY(100%);
         }
         to{
-            height: 0;
+            transform: scaleY(0);
             display: none;
         }
     }

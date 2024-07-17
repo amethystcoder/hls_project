@@ -6,6 +6,15 @@
     <link rel="stylesheet" href="../static/common_styles.css">
     <link rel="stylesheet" href="../static/hls.css">
     <title>HLS</title>
+    <script>
+        function toggleSelectAll(){
+            let checkAll = document.getElementById("check-all")
+            let checks = document.querySelectorAll(".checkBoxes")
+            for (let index = 0; index < checks.length; index++) {
+                checks[index].checked = checkAll.checked
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="side-div">
@@ -36,7 +45,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <td><input type="checkbox" name="" id=""></td>
+                            <td><input type="checkbox" name="" id="" onchange="toggleSelectAll()"></td>
                             <td>ID</td>
                             <td>Title</td>
                             <td>Server</td>
@@ -49,6 +58,7 @@
                     <tbody>
                         <% hlsData.forEach((hls)=>{ %>
                             <tr>
+                                <td><input type="checkbox" name="" id="" class="checkBoxes"></td>
                                 <td><%= hls.id %></td>
                                 <td><%= hls.title %></td>
                                 <td>Main</td><!-- Will add server later after seperating duties -->
@@ -68,7 +78,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <td><input type="checkbox" name="" id=""></td>
+                            <td><input type="checkbox" name="" id="" onchange="toggleSelectAll()"></td>
                             <td>ID</td>
                             <td>Title</td>
                             <td>Source</td>
@@ -90,7 +100,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <td><input type="checkbox" name="" id=""></td>
+                            <td><input type="checkbox" name="" id="" onchange="toggleSelectAll()"></td>
                             <td>ID</td>
                             <td>Title</td>
                             <td>Server</td>

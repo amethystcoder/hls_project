@@ -3,7 +3,7 @@ const DBPool = require('./dbConfig')
 
 //adds all required tables and configuration data to a new database
 
-const initializeDatabase = async ()=>{
+const initializeDatabase = ()=>{
     try {
         //create tables
         fs.readFile('./db.sql',async (err,data)=>{
@@ -17,19 +17,7 @@ const initializeDatabase = async ()=>{
                     SQLcommand = ''
                 }
             }  
-        })
-        //create default values for config
-        fs.readFile('./def_values.sql',async (err,data)=>{
-            if(err) return err
-            let file = data.toString('utf-8')
-            let SQLcommand = ''
-            for (let index = 0; index < file.length; index++) {
-                SQLcommand += file[index];
-                if (file[index] === ";") {
-                    await DBPool.query(SQLcommand)
-                    SQLcommand = ''
-                }
-            }  
+            await DBPool.end()
         })
         return {success:true}
     } catch (error) {
