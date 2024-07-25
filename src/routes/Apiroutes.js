@@ -11,6 +11,19 @@ const bcrypt = require('bcryptjs')
 
 const upload = multer({dest: "/uploads/"})
 
+//auth middleware
+const auth = (req,res,next) => {
+    try {
+        if (req.session.username) {
+            next()
+        } else {
+            res.status(401).send({success:false,message:"unauthorized"})
+        }
+    } catch (error) {
+        res.status(401).send({success:false,message:"unauthorized"})
+    }
+}
+
 router.get("/health",(req,res)=>{
     try {
         res.json({data:"ok"})
@@ -345,6 +358,20 @@ router.delete("/brokenproxies/delete",async (req,res)=>{
         if (req.session.username) {
             let results = await DB.proxyStore.removeBrokenProxies(req.body.proxy)
             res.status(202).send({success:true,message:results})
+        } else {
+            res.status(401).send({success:false,message:"unauthorized"})
+        }
+    } catch (error) {
+        res.json({error})
+    }
+})
+
+router.post("/auth/gauth/create",async (req,res)=>{
+    try {
+        if (req.session.username) {
+            const {client_id,client_secret,refresh_token,email} = req.body;
+            let result = await DB.driveAuthDB.createNewAuth({client_id,client_secret,refresh_token,email,access_token:generateUniqueId(20)})
+            res.status(202).send({success:true,message:result})
         } else {
             res.status(401).send({success:false,message:"unauthorized"})
         }

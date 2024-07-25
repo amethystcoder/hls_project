@@ -117,10 +117,11 @@ router.get('/settings/:section',async (req,res)=>{
                     })
                     break;
                 case "gdriveAuth":
-                res.render('../template/settings/gdriveAuth',{
-                    settings
-                })
-                break;
+                    let driveAuths = await DBs.driveAuthDB.getAlldrive_auth()
+                    res.render('../template/settings/gdriveAuth',{
+                        settings,driveAuths
+                    })
+                    break;
                 default:
                     res.render('../template/settings',{
                         settings
