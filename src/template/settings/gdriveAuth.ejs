@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/common_styles.css">
     <script>
-        function saveGAuth(params) {
+        window.addEventListener("DOMContentLoaded",(ev)=>{
             let gauthForm = document.querySelector(".gauth-form")
             gauthForm.addEventListener("submit",(ev)=>{
                 ev.preventDefault()
@@ -13,10 +13,10 @@
                 let data = {
                     email:formdata.get("email"),
                     client_id:formdata.get("client-id"),
-                    client_secret:formdata.get("client_secret"),
-                    client_secret:formdata.get("refresh_token")
+                    client_secret:formdata.get("client-secret"),
+                    refresh_token:formdata.get("refresh-token")
                 }
-                fetch('../auth/gauth/create',{
+                fetch('/api/auth/gauth/create',{
                     headers:{
                         "Content-Type":"application/json"
                     },
@@ -33,7 +33,7 @@
                 })
                 .catch(error=>{console.log(error)})
             })
-        }
+        })
     </script>
     <title>Google Drive Auth</title>
 </head>

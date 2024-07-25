@@ -97,7 +97,7 @@ let createNewAuth = async (drive_authData)=>{
     drive_authData.updated_at = new Date().toUTCString()
     drive_authData.created_at = new Date().toUTCString()
     drive_authData.status = true
-    let result = await dbInstance.query(`INSERT INTO ${table} (client_id,client_secret,refresh_token,updated_at,created_at,access_token,email,status) VALUES (?,?,?,?,?,?)`, 
+    let result = await dbInstance.query(`INSERT INTO ${table} (client_id,client_secret,refresh_token,updated_at,created_at,access_token,email,status) VALUES (?,?,?,?,?,?,?,?)`, 
     [drive_authData.client_id,drive_authData.client_secret,drive_authData.refresh_token,drive_authData.updated_at,drive_authData.created_at,drive_authData.access_token,drive_authData.email,drive_authData.status])
     return result;
 }
@@ -176,5 +176,5 @@ module.exports = {
     createNewAuth,
     updateUsingId,
     deleteUsingId,
-    customDelete,
+    customDelete
 }
