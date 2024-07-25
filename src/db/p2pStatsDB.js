@@ -91,8 +91,8 @@ let getDistinct = async (name,restOfQuery = '')=>{
 let createNewP2PData = async (P2PData)=>{
     if (typeof P2PData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    P2PData.date = new Date().toUTCString()
-    let result = await dbInstance.query(`INSERT INTO ${table} (upload,download,peers,ipAddress,country,device,date) VALUES (?,?,?,?,?,?,?)`, [P2PData.upload,P2PData.download,P2PData.peers,P2PData.ipAddress,P2PData.country,P2PData.device,P2PData.date])
+    let date = new Date()
+    let result = await dbInstance.query(`INSERT INTO ${table} (upload,download,peers,ipAddress,country,device,date) VALUES (?,?,?,?,?,?,?)`, [P2PData.upload,P2PData.download,P2PData.peers,P2PData.ipAddress,P2PData.country,P2PData.device,date.toISOString()])
     return result;
 }
 

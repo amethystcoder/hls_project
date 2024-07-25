@@ -94,11 +94,10 @@ let getAuthUsingEmail = async (Email)=>{
 let createNewAuth = async (drive_authData)=>{
     if (typeof drive_authData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
-    drive_authData.updated_at = new Date().toUTCString()
-    drive_authData.created_at = new Date().toUTCString()
+    let date = new Date()
     drive_authData.status = true
     let result = await dbInstance.query(`INSERT INTO ${table} (client_id,client_secret,refresh_token,updated_at,created_at,access_token,email,status) VALUES (?,?,?,?,?,?,?,?)`, 
-    [drive_authData.client_id,drive_authData.client_secret,drive_authData.refresh_token,drive_authData.updated_at,drive_authData.created_at,drive_authData.access_token,drive_authData.email,drive_authData.status])
+    [drive_authData.client_id,drive_authData.client_secret,drive_authData.refresh_token,date.toISOString(),date.toISOString(),drive_authData.access_token,drive_authData.email,drive_authData.status])
     return result;
 }
 

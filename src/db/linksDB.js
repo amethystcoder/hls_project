@@ -104,10 +104,11 @@ let getLinkUsingId = async (linkId)=>{
 let createNewLink = async (linkData)=>{
     if (typeof linkData != 'object') throw TypeError("argument type is not correct, it should be an object")
     //TODO some other checks here to be strict with the type of data coming in
+    let date = new Date()
     linkData.status = "active"
     linkData.deleted = false
     let result = await dbInstance.query(`INSERT INTO ${table} (acc_id,title,main_link,alt_link,preview_img,type,slug,subtitles,status,updated_at,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)`, 
-    [linkData.acc_id,linkData.title,linkData.main_link,linkData.alt_link,linkData.preview_img,linkData.type,linkData.slug,linkData.subtitles,linkData.status,new Date().toUTCString(),new Date().toUTCString()])
+    [linkData.acc_id,linkData.title,linkData.main_link,linkData.alt_link,linkData.preview_img,linkData.type,linkData.slug,linkData.subtitles,linkData.status,date.toISOString(),date.toISOString()])
     return result;
 }
 
