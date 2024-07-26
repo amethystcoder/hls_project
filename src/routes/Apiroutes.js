@@ -371,6 +371,9 @@ router.post("/auth/gauth/create",async (req,res)=>{
         if (req.session.username) {
             const {client_id,client_secret,refresh_token,email} = req.body;
             let result = await DB.driveAuthDB.createNewAuth({client_id,client_secret,refresh_token,email,access_token:generateUniqueId(20)})
+            let redirectUri = "" //need to determine this to know where to go back to after google has authorised the user
+            let OAuth = sources.GoogleDrive.generateOauth(client_id,client_secret,redirectUri)
+            sources.GoogleDrive.generateGoogleAuthUrl(OAuth)
             res.status(202).send({success:true,message:result})
         } else {
             res.status(401).send({success:false,message:"unauthorized"})
